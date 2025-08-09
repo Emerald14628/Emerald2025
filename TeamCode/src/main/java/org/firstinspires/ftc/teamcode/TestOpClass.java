@@ -14,9 +14,7 @@ public class TestOpClass extends LinearOpMode {
 
         waitForStart();
 
-        y *= maxPower;
-        x *= maxPower;
-        rx *= maxPower;
+        if (isStopRequested()) return;
 
         while (opModeIsActive()) {
             // Handle drive controls using DriveSubsystem
