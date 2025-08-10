@@ -17,7 +17,7 @@ public class TestOpClass extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            // Handle drive controls using DriveSubsystem test
+            // Handle drive controls using DriveSubsystem
             robot.driveSubsystem.handleDriveInput(
                 -gamepad1.left_stick_y,
                 gamepad1.left_stick_x,
