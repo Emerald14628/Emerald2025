@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.*;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 public class RobotHardware {
     // Motor names as constants
@@ -16,6 +18,7 @@ public class RobotHardware {
     public static final String BACK_RIGHT_MOTOR = "backRightMotor";
     public static final String ARM_MOTOR = "armMotor";
     public static final String UD_ARM_MOTOR = "udarmMotor";
+    public static final String IMU_NAME = "imu";
 
     // Subsystems
     public DriveSubsystem driveSubsystem;
@@ -34,6 +37,7 @@ public class RobotHardware {
     public CRServo wristSpinServo;
     public TouchSensor armLimit;
     public ElapsedTime timer;
+    public IMU imu;
 
     private HardwareMap hardwareMap;
 
@@ -56,6 +60,17 @@ public class RobotHardware {
         wristSpinServo = hardwareMap.crservo.get("wristSpinServo");
         armLimit = hardwareMap.touchSensor.get("armLimit");
 
+        // Initialize IMU
+        imu = hardwareMap.get(IMU.class, IMU_NAME);
+        IMU.Parameters parameters = new IMU.Parameters(
+            new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+            )
+        );
+        imu.initialize(parameters);
+        imu.resetYaw();
+
         timer = new ElapsedTime();
 
         // Set motor directions
@@ -67,7 +82,7 @@ public class RobotHardware {
         udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Initialize subsystems
-        driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
         armSubsystem = new ArmSubsystem(armMotor, udarmMotor, armLimit);
         servoSubsystem = new ServoSubsystem(clawServo, wristServo, wristSpinServo);
     }
