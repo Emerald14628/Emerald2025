@@ -31,12 +31,21 @@ public class DriveSubsystem {
     }
 
     public void handleDriveInput(double y, double x, double rx, double leftTrigger, double rightTrigger) {
+        // If no movement input, don't apply any power regardless of trigger state
+        if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1 && Math.abs(rx) < 0.1) {
+            frontLeftMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backRightMotor.setPower(0);
+            return;
+        }
+
         double maxPower = calculateMaxPower(leftTrigger, rightTrigger);
 
         // Apply speed modifications
         y = y * maxPower;
-        x = x * maxPower;
-        rx = rx * maxPower;
+        x = -x * maxPower;
+        rx = -rx * maxPower;
 
         // Get the robot's heading from the IMU
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
@@ -54,8 +63,8 @@ public class DriveSubsystem {
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
         double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
+        double frontRightPower = -(y - x - rx) / denominator;
+        double backRightPower = -(y + x - rx) / denominator;
 
         // Set motor powers
         frontLeftMotor.setPower(frontLeftPower);
@@ -97,5 +106,12 @@ public class DriveSubsystem {
     public double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
+    }
+
+    public void addMotorPowersToTelemetry(org.firstinspires.ftc.robotcore.external.Telemetry telemetry) {
+        telemetry.addData("FL Power", String.format("%.2f", frontLeftMotor.getPower()));
+        telemetry.addData("FR Power", String.format("%.2f", frontRightMotor.getPower()));
+        telemetry.addData("BL Power", String.format("%.2f", backLeftMotor.getPower()));
+        telemetry.addData("BR Power", String.format("%.2f", backRightMotor.getPower()));
     }
 }

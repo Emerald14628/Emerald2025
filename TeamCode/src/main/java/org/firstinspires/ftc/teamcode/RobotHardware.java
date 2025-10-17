@@ -22,20 +22,20 @@ public class RobotHardware {
 
     // Subsystems
     public DriveSubsystem driveSubsystem;
-    public ArmSubsystem armSubsystem;
-    public ServoSubsystem servoSubsystem;
+    //public ArmSubsystem armSubsystem;
+    //public ServoSubsystem servoSubsystem;
 
     // Hardware declarations (kept for compatibility)
     public DcMotor frontLeftMotor;
     public DcMotor backLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backRightMotor;
-    public DcMotor armMotor;
-    public DcMotor udarmMotor;
-    public CRServo clawServo;
-    public CRServo wristServo;
-    public CRServo wristSpinServo;
-    public TouchSensor armLimit;
+    //public DcMotor armMotor;
+    //public DcMotor udarmMotor;
+    //public CRServo clawServo;
+    //public CRServo wristServo;
+    //public CRServo wristSpinServo;
+    //public TouchSensor armLimit;
     public ElapsedTime timer;
     public IMU imu;
 
@@ -51,14 +51,14 @@ public class RobotHardware {
         backLeftMotor = hardwareMap.dcMotor.get(BACK_LEFT_MOTOR);
         frontRightMotor = hardwareMap.dcMotor.get(FRONT_RIGHT_MOTOR);
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
-        armMotor = hardwareMap.dcMotor.get(ARM_MOTOR);
-        udarmMotor = hardwareMap.dcMotor.get(UD_ARM_MOTOR);
+        //armMotor = hardwareMap.dcMotor.get(ARM_MOTOR);
+        //udarmMotor = hardwareMap.dcMotor.get(UD_ARM_MOTOR);
 
         // Initialize servos
-        clawServo = hardwareMap.crservo.get("clawServo");
-        wristServo = hardwareMap.crservo.get("wristServo");
-        wristSpinServo = hardwareMap.crservo.get("wristSpinServo");
-        armLimit = hardwareMap.touchSensor.get("armLimit");
+        //clawServo = hardwareMap.crservo.get("clawServo");
+        //wristServo = hardwareMap.crservo.get("wristServo");
+        //wristSpinServo = hardwareMap.crservo.get("wristSpinServo");
+        //armLimit = hardwareMap.touchSensor.get("armLimit");
 
         // Initialize IMU
         imu = hardwareMap.get(IMU.class, IMU_NAME);
@@ -78,13 +78,13 @@ public class RobotHardware {
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Initialize encoders
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
-        armSubsystem = new ArmSubsystem(armMotor, udarmMotor, armLimit);
-        servoSubsystem = new ServoSubsystem(clawServo, wristServo, wristSpinServo);
+        //armSubsystem = new ArmSubsystem(armMotor, udarmMotor, armLimit);
+        //servoSubsystem = new ServoSubsystem(clawServo, wristServo, wristSpinServo);
     }
 
     // Delegate methods to subsystems
@@ -92,7 +92,5 @@ public class RobotHardware {
         driveSubsystem.handleDriveInput(-fl, 0, 0, 0, 0);
     }
 
-    public void resetArmEncoders() {
-        armSubsystem.resetEncoders();
-    }
+    //public void resetArmEncoders() {armSubsystem.resetEncoders();}
 }

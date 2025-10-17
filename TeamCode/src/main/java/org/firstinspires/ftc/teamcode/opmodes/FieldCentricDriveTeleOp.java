@@ -64,6 +64,15 @@ public class FieldCentricDriveTeleOp extends LinearOpMode {
                 }
             }
 
+            // Recalibrate IMU with Y button
+            if (gamepad1.y) {
+                drive.calibrateIMU();
+                telemetry.addData("IMU", "Recalibrated");
+                while (gamepad1.y) {
+                    // Wait for button release to prevent multiple calibrations
+                }
+            }
+
             // Handle drive input
             drive.handleDriveInput(y, x, rx, leftTrigger, rightTrigger);
 

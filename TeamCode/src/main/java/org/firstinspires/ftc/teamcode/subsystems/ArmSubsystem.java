@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Constants;
-
+/*
 public class ArmSubsystem {
     private final DcMotor armMotor;
     private final DcMotor udarmMotor;
@@ -72,3 +72,4 @@ public class ArmSubsystem {
         udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
+*/
