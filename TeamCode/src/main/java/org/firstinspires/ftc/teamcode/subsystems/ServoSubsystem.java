@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
-
+/*
 public class ServoSubsystem {
     private final CRServo clawServo;
     private final CRServo wristServo;
@@ -43,3 +43,4 @@ public class ServoSubsystem {
         }
     }
 }
+*/
