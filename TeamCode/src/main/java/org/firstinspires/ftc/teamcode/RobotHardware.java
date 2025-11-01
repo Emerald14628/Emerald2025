@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.gobildasensors.GoBildaPinpointDriver;
 
 public class RobotHardware {
     // Motor names as constants
@@ -18,10 +19,13 @@ public class RobotHardware {
     public static final String BACK_RIGHT_MOTOR = "backRightMotor";
     public static final String ARM_MOTOR = "armMotor";
     public static final String UD_ARM_MOTOR = "udarmMotor";
+    public static final String INTAKE_MOTOR = "intakeMotor";
     public static final String IMU_NAME = "imu";
+    public static final String PINPOINT_NAME = "odo"; // I2C Pinpoint odometry computer
 
     // Subsystems
     public DriveSubsystem driveSubsystem;
+    //public OdometrySubsystem odometrySubsystem;
     //public ArmSubsystem armSubsystem;
     //public ServoSubsystem servoSubsystem;
 
@@ -30,6 +34,7 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backRightMotor;
+    public DcMotor intakeMotor;
     //public DcMotor armMotor;
     //public DcMotor udarmMotor;
     //public CRServo clawServo;
@@ -38,6 +43,7 @@ public class RobotHardware {
     //public TouchSensor armLimit;
     public ElapsedTime timer;
     public IMU imu;
+    public GoBildaPinpointDriver pinpoint; // Pinpoint odometry computer
 
     private HardwareMap hardwareMap;
 
@@ -51,6 +57,7 @@ public class RobotHardware {
         backLeftMotor = hardwareMap.dcMotor.get(BACK_LEFT_MOTOR);
         frontRightMotor = hardwareMap.dcMotor.get(FRONT_RIGHT_MOTOR);
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
+        intakeMotor = hardwareMap.dcMotor.get(INTAKE_MOTOR);
         //armMotor = hardwareMap.dcMotor.get(ARM_MOTOR);
         //udarmMotor = hardwareMap.dcMotor.get(UD_ARM_MOTOR);
 
@@ -77,12 +84,27 @@ public class RobotHardware {
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // Initialize encoders
-        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // Initialize Pinpoint odometry computer (I2C)
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, PINPOINT_NAME);
+
+        // Set encoder resolution based on your odometry pods
+        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+
+        // Set encoder directions - adjust if wheels count backwards
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                                       GoBildaPinpointDriver.EncoderDirection.FORWARD);
+
+        // Configure Pinpoint - set offsets for your dead wheel positions
+        // X offset: parallel wheel distance from center (forward/backward) in mm
+        // Y offset: perpendicular wheel distance from center (left/right) in mm
+        // Measure from robot center to each encoder wheel
+        // Positive X = forward, Positive Y = left
+        // TODO: MEASURE AND UPDATE THESE VALUES FROM YOUR ROBOT
+        pinpoint.setOffsets(-84.0, -168.0); // (xOffset in mm, yOffset in mm)
 
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
+        //odometrySubsystem = new OdometrySubsystem(pinpoint);
         //armSubsystem = new ArmSubsystem(armMotor, udarmMotor, armLimit);
         //servoSubsystem = new ServoSubsystem(clawServo, wristServo, wristSpinServo);
     }
