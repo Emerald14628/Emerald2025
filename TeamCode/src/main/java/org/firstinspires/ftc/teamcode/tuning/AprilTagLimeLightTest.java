@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 @Autonomous
 public class AprilTagLimeLightTest extends OpMode {
     private Limelight3A limelight;
-
-    private IMU  imu;
+    private IMU imu;
+    private String detectedMotif = "u";
     @Override
     public void init() {
      limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -38,25 +38,64 @@ public class AprilTagLimeLightTest extends OpMode {
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(angles.getYaw());
         LLResult llResult = limelight.getLatestResult();
-        if (llResult != null && llResult.isValid()){
-            Pose3D botPose = llResult.getBotpose_MT2();
-            telemetry.addData("Tx", llResult.getTx());
-            telemetry.addData("Ty", llResult.getTy());
-            telemetry.addData("Ta", llResult.getTa());
-            telemetry.addData("BotPose" , botPose.toString());
-            telemetry.addData("Yaw" , botPose.getOrientation().getYaw());
 
-            // Get all detected AprilTags
-            java.util.List<LLResultTypes.FiducialResult> fiducialResults = llResult.getFiducialResults();
-            for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                telemetry.addData("AprilTag ID", fr.getFiducialId());
-                telemetry.addData("AprilTag Family", fr.getFamily());
-                telemetry.addData("AprilTag X", "%.2f", fr.getTargetXDegrees());
-                telemetry.addData("AprilTag Y", "%.2f", fr.getTargetYDegrees());
+        // Always show status first
+        telemetry.addData("---STATUS---", "");
+        telemetry.addData("Limelight Connected", limelight != null ? "YES" : "NO");
+
+        if (llResult != null) {
+            telemetry.addData("Result Valid", llResult.isValid() ? "YES" : "NO");
+
+            if (llResult.isValid()) {
+                Pose3D botPose = llResult.getBotpose_MT2();
+                telemetry.addData("Tx", "%.2f", llResult.getTx());
+                telemetry.addData("Ty", "%.2f", llResult.getTy());
+                telemetry.addData("Ta", "%.2f", llResult.getTa());
+
+                // Get all detected AprilTags
+                java.util.List<LLResultTypes.FiducialResult> fiducialResults = llResult.getFiducialResults();
+                telemetry.addData("---APRILTAGS---", "");
+                telemetry.addData("Number of Tags", fiducialResults.size());
+
+                if (fiducialResults.size() == 0) {
+                    telemetry.addData("Tag Status", "NO TAGS FOUND");
+                    detectedMotif = "NO TAGS";
+                } else {
+                    int tagCount = 0;
+                    for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                        tagCount++;
+                        int tagId = fr.getFiducialId();
+
+                        telemetry.addData("Tag " + tagCount + " ID", tagId);
+                        telemetry.addData("Tag " + tagCount + " Family", fr.getFamily());
+                        telemetry.addData("Tag " + tagCount + " X", "%.2f deg", fr.getTargetXDegrees());
+                        telemetry.addData("Tag " + tagCount + " Y", "%.2f deg", fr.getTargetYDegrees());
+
+                        // Check AprilTag ID and set motif
+                        if (tagId == 23) {
+                            detectedMotif = "P P G";
+                        } else if (tagId == 22) {
+                            detectedMotif = "P G P";
+                        } else if (tagId == 21) {
+                            detectedMotif = "G P P";
+                        } else {
+                            detectedMotif = "UNKNOWN TAG: " + tagId;
+                        }
+                    }
+                }
+            } else {
+                telemetry.addData("Tag Status", "NO VALID RESULTS");
+                detectedMotif = "NO DETECTION";
             }
+        } else {
+            telemetry.addData("Result Valid", "NULL RESULT");
+            telemetry.addData("Tag Status", "LIMELIGHT NOT RESPONDING");
+            detectedMotif = "NO CONNECTION";
         }
+
+        // Display the detected motif
+        telemetry.addData("---MOTIF---", "");
+        telemetry.addData("Detected Motif", detectedMotif);
         telemetry.update();
     }
-
-
 }
