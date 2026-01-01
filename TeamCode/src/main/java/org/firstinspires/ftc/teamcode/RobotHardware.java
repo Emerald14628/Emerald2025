@@ -28,7 +28,8 @@ public class RobotHardware {
     //public OdometrySubsystem odometrySubsystem;
     //public ArmSubsystem armSubsystem;
     //public ServoSubsystem servoSubsystem;
-
+    public ShooterSubsystem shooterSubsystem;
+    public IntakeSubsystem intakeSubsystem;
     // Hardware declarations (kept for compatibility)
     public DcMotor frontLeftMotor;
     public DcMotor backLeftMotor;
@@ -44,8 +45,11 @@ public class RobotHardware {
     public ElapsedTime timer;
     public IMU imu;
     public GoBildaPinpointDriver pinpoint; // Pinpoint odometry computer
-
+    public ColorSensor leftColorSensor=new ColorSensor();
+    public ColorSensor rightColorSensor=new ColorSensor();
+    public LimeLight limeLight=new LimeLight();
     private HardwareMap hardwareMap;
+    public String shooterSubsystemError = null;
 
     public RobotHardware(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -58,6 +62,10 @@ public class RobotHardware {
         frontRightMotor = hardwareMap.dcMotor.get(FRONT_RIGHT_MOTOR);
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
         intakeMotor = hardwareMap.dcMotor.get(INTAKE_MOTOR);
+        leftColorSensor.init(hardwareMap,"leftColorSensor");
+        rightColorSensor.init(hardwareMap,"rightColorSensor");
+        limeLight.init(hardwareMap);
+        //Create limelight object
         //armMotor = hardwareMap.dcMotor.get(ARM_MOTOR);
         //udarmMotor = hardwareMap.dcMotor.get(UD_ARM_MOTOR);
 
@@ -104,6 +112,17 @@ public class RobotHardware {
 
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
+        intakeSubsystem = new IntakeSubsystem(intakeMotor);
+
+        // Initialize ShooterSubsystem only if hardware is configured
+        try {
+            shooterSubsystem = new ShooterSubsystem(hardwareMap);
+        } catch (Exception e) {
+            // ShooterSubsystem hardware not configured, leave it null
+            shooterSubsystem = null;
+            shooterSubsystemError = "ShooterSubsystem init failed: " + e.getMessage();
+        }
+
         //odometrySubsystem = new OdometrySubsystem(pinpoint);
         //armSubsystem = new ArmSubsystem(armMotor, udarmMotor, armLimit);
         //servoSubsystem = new ServoSubsystem(clawServo, wristServo, wristSpinServo);
