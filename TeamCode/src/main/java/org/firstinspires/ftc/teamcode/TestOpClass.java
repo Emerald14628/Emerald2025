@@ -37,6 +37,11 @@ public class TestOpClass extends LinearOpMode {
         boolean isIntakeActive= false;
         boolean isArtifactLeftActive= false;
         boolean isArtifactRightActive= false;
+        boolean isLeftShooterActive= false;
+        boolean isRightShooterActive= false;
+        long leftArtifactStartTime = 0;  // Track when left artifact pusher was activated
+        long rightArtifactStartTime = 0;  // Track when right artifact pusher was activated
+        long hogWheelStartTime = 0;  // Track when hogwheels were activated
         robot.limeLight.start();
         while (opModeIsActive()) {
             // Handle field centric toggle with dpad_down
@@ -90,6 +95,104 @@ public class TestOpClass extends LinearOpMode {
 
             // Shooter controls - only if shooter subsystem initialized successfully
             if (robot.shooterSubsystem != null) {
+
+                //Idea for shooting system
+                //1. x button shoots left side
+                //   A. start up hogwheels to 100% if not aleady active
+                //   B. after x seconds of hogwheel turning on OR shooting articfact (to give time for hogwheels to reach full speed), then activevate left shooter servo
+                //   C. after y seconds of left shooter servo active, turn off left shooter servo
+                //   D. hogwheels continues to run until x button is pressed again to turn off (Or do we just leave running until the end of the match?)
+                //2. b button shoots right side
+                //   A. start up hogwheels to 100% if not aleady active
+                //   B. after x seconds of hogwheel turning on OR shooting articfact (to give time for hogwheels to reach full speed), then activevate right shooter servo
+                //   C. after y seconds of right shooter servo active, turn off right shooter servo
+                //   D. hogwheels continues to run until b button is pressed again to turn off (Or do we just leave running until the end of the match?)
+                //---------------------------------------
+                if ((gamepad1.left_bumper && !lastLeftShooterState) || (gamepad1.right_bumper && !lastRightShooterState)) {
+                    // Start hogwheel if not already active
+                    if (!isShootingActive) {
+                        robot.shooterSubsystem.activateHogWheel();
+                        isShootingActive = true;
+                        hogWheelStartTime = System.currentTimeMillis();// Record start time
+                        if (gamepad1.left_bumper) {
+                            isLeftShooterActive = true;
+                            leftArtifactStartTime = 0;  // Reset timer
+                        } else {
+                            isRightShooterActive = true;
+                            rightArtifactStartTime = 0; // Reset timer
+                        }
+                        }
+                    else {
+                        isLeftShooterActive = false;
+                        isRightShooterActive = false;
+                        isShootingActive = false;
+                        isRightShooterActive=false;
+                        isLeftShooterActive=false;
+                        isArtifactRightActive=false;
+                        isArtifactLeftActive=false;
+                        robot.shooterSubsystem.stopShooting();
+                        leftArtifactStartTime=0;
+                        rightArtifactStartTime=0;
+                        hogWheelStartTime =0;
+
+                    }
+                }
+
+                    //Shoot left side
+                    if (isLeftShooterActive && hogWheelStartTime >0  && System.currentTimeMillis() - hogWheelStartTime >= 2500) {
+                        //------------------------
+                        //code to use odemetry to move robot to first shooting position goes here
+                        //code to adjust shooting angle goes here
+                        //------------------------
+                        // Shoot left
+                            robot.shooterSubsystem.pushArtifactLeft();
+                            isArtifactLeftActive = true;
+                            leftArtifactStartTime = System.currentTimeMillis();  // Record start time
+                        hogWheelStartTime = 0; // Reset hogWheel timer
+                    }
+
+                    //Shoot right side
+                    if (isRightShooterActive && hogWheelStartTime >0  && System.currentTimeMillis() - hogWheelStartTime >= 2500) {
+                        //------------------------
+                        //code to use odemetry to move robot to second shooting position goes here
+                        //code to adjust shooting angle goes here
+                        //------------------------
+                        // Shoot right
+                            robot.shooterSubsystem.pushArtifactRight();
+                            isArtifactRightActive = true;
+                            rightArtifactStartTime = System.currentTimeMillis();  // Record start time
+                        hogWheelStartTime = 0; // Reset hogWheel timer
+                    }
+
+
+            // Auto-stop left artifact shooter after 3 seconds; will probably need to adjust time later so that
+                //it doesnt shoot another artifact if there is one loaded right after
+            if (isArtifactLeftActive && leftArtifactStartTime > 0) {
+                long elapsedTime = System.currentTimeMillis() - leftArtifactStartTime;
+                if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
+                    robot.shooterSubsystem.stopArtifactLeft();
+                    isArtifactLeftActive = false;
+                    leftArtifactStartTime = 0;
+                }
+            }
+
+            // Auto-stop right artifact shooter after 3 seconds; will probably need to adjust time later so that
+                //it doesnt shoot another artifact if there is one loaded right after
+            if (isArtifactRightActive && rightArtifactStartTime > 0) {
+                long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
+                if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
+                    robot.shooterSubsystem.stopArtifactRight();
+                    isArtifactRightActive = false;
+                    rightArtifactStartTime = 0;
+                }
+            }
+                if (gamepad1.b && !lastBButtonState){
+                    robot.shooterSubsystem.changeShooterAngleBackward();
+                }
+                if (!gamepad1.y && lastYButtonState){
+                    robot.shooterSubsystem.changeShooterAngleFoward();
+                }
+/*
                 if (gamepad1.left_bumper && !lastLeftShooterState) {
                     // Shoot left
                     if (isArtifactLeftActive) {
@@ -119,7 +222,7 @@ public class TestOpClass extends LinearOpMode {
                         isShootingActive = true;
                     }
                 }
- /*
+ //---------------------------------------
                     if (gamepad1.b && !lastBButtonState){
                         robot.shooterSubsystem.changeShooterAngleBackward();
                     }
