@@ -12,7 +12,7 @@ public class DriveSubsystem {
     private final DcMotor frontRightMotor;
     private final DcMotor backRightMotor;
     private final IMU imu;
-    private boolean fieldCentric = true;
+    private boolean fieldCentric = false;
 
     public DriveSubsystem(DcMotor frontLeft, DcMotor backLeft, DcMotor frontRight, DcMotor backRight, IMU imu) {
         this.frontLeftMotor = frontLeft;
@@ -76,10 +76,10 @@ public class DriveSubsystem {
     private double calculateMaxPower(double leftTrigger, double rightTrigger) {
         double maxPower = Constants.MotorConstants.driveSpeed;
 
-        if (leftTrigger != 0) {
-            maxPower = Constants.MotorConstants.driveSpeed +
-                    ((1 - Constants.MotorConstants.driveSpeed) * leftTrigger);
-        }
+        //if (leftTrigger != 0) {
+           // maxPower = Constants.MotorConstants.driveSpeed +
+                  //  ((1 - Constants.MotorConstants.driveSpeed) * leftTrigger);
+      //  }
 
         if (rightTrigger != 0) {
             maxPower = Constants.MotorConstants.driveSpeed - Constants.MotorConstants.driveSpeed * rightTrigger;

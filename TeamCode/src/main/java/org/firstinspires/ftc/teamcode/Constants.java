@@ -34,7 +34,7 @@ public final class
 
 Constants {
     public final static class MotorConstants {
-        public static final double driveSpeed = 0.6;
+        public static final double driveSpeed = 1.0;
     }
 
     public final static class ViperslideConstants {
