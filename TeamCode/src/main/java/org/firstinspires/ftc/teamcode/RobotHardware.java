@@ -80,7 +80,7 @@ public class RobotHardware {
         IMU.Parameters parameters = new IMU.Parameters(
             new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
             )
         );
         imu.initialize(parameters);
@@ -109,7 +109,7 @@ public class RobotHardware {
         // Positive X = forward, Positive Y = left
         // TODO: MEASURE AND UPDATE THESE VALUES FROM YOUR ROBOT
         pinpoint.setOffsets(-84.0, -168.0); // (xOffset in mm, yOffset in mm)
-
+        pinpoint.resetPosAndIMU();
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
         intakeSubsystem = new IntakeSubsystem(intakeMotor);
