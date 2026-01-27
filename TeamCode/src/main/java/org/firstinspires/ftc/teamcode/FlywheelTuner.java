@@ -28,6 +28,12 @@ public class FlywheelTuner extends LinearOpMode {
         motor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
+        boolean yWasPressed = false;
+        boolean bWasPressed = false;
+        boolean dPadRightPressed = false;
+        boolean dPadLeftPressed = false;
+        boolean dPadUpPressed = false;
+        boolean dPadDownPressed = false;
         waitForStart();
 
         while (opModeIsActive()) {
@@ -35,7 +41,7 @@ public class FlywheelTuner extends LinearOpMode {
 
             // ADJUSTING VALUES WITH GAMEPAD 1
             // D-pad Up/Down to adjust P
-            if (gamepad1.y) {
+            if (gamepad1.y && !yWasPressed) {
                 if (targetVelocity == highVelocity) {
                     targetVelocity = lowVelocity;
                 } else {
@@ -43,16 +49,23 @@ public class FlywheelTuner extends LinearOpMode {
                 }
             }
 
-            if (gamepad1.b) {
+            if (gamepad1.b && !bWasPressed) {
                 stepIndex = (stepIndex + 1) % stepSizes.length;
             }
-            if (gamepad1.dpad_up) p += stepSizes[stepIndex];
-            ;
-            if (gamepad1.dpad_down) p -= stepSizes[stepIndex];
+            if (gamepad1.dpad_up && !dPadUpPressed) p += stepSizes[stepIndex];
+
+            if (gamepad1.dpad_down && !dPadDownPressed) p -= stepSizes[stepIndex];
 
             // D-pad Left/Right to adjust F
-            if (gamepad1.dpad_right) f += stepSizes[stepIndex];
-            if (gamepad1.dpad_left) f -= stepSizes[stepIndex];
+            if (gamepad1.dpad_right && !dPadRightPressed) f += stepSizes[stepIndex];
+            if (gamepad1.dpad_left && !dPadLeftPressed) f -= stepSizes[stepIndex];
+
+            yWasPressed = gamepad1.y;
+            bWasPressed = gamepad1.b;
+            dPadRightPressed = gamepad1.dpad_right;
+            dPadLeftPressed = gamepad1.dpad_left;
+            dPadUpPressed = gamepad1.dpad_up;
+            dPadDownPressed = gamepad1.dpad_down;
 
             // Update motor PIDF coefficients
             motor1.setVelocityPIDFCoefficients(p, 0, 0, f);
