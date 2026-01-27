@@ -17,9 +17,9 @@ public class RobotHardware {
     public static final String BACK_LEFT_MOTOR = "backLeftMotor";
     public static final String FRONT_RIGHT_MOTOR = "frontRightMotor";
     public static final String BACK_RIGHT_MOTOR = "backRightMotor";
-    public static final String ARM_MOTOR = "armMotor";
-    public static final String UD_ARM_MOTOR = "udarmMotor";
-    public static final String INTAKE_MOTOR = "intakeMotor";
+
+    public static final String INTAKE_MOTOR_1 = "intakeMotor1";
+    public static final String INTAKE_MOTOR_2 = "intakeMotor2";
     public static final String IMU_NAME = "imu";
     public static final String PINPOINT_NAME = "odo"; // I2C Pinpoint odometry computer
 
@@ -35,7 +35,8 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backRightMotor;
-    public DcMotor intakeMotor;
+    public DcMotor intakeMotor1;
+    public DcMotor intakeMotor2;
     //public DcMotor armMotor;
     //public DcMotor udarmMotor;
     //public CRServo clawServo;
@@ -61,7 +62,8 @@ public class RobotHardware {
         backLeftMotor = hardwareMap.dcMotor.get(BACK_LEFT_MOTOR);
         frontRightMotor = hardwareMap.dcMotor.get(FRONT_RIGHT_MOTOR);
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
-        intakeMotor = hardwareMap.dcMotor.get(INTAKE_MOTOR);
+        intakeMotor1 = hardwareMap.dcMotor.get(INTAKE_MOTOR_1);
+        intakeMotor2 = hardwareMap.dcMotor.get(INTAKE_MOTOR_2);
         leftColorSensor.init(hardwareMap,"leftColorSensor");
         rightColorSensor.init(hardwareMap,"rightColorSensor");
         limeLight.init(hardwareMap);
@@ -112,7 +114,7 @@ public class RobotHardware {
         pinpoint.resetPosAndIMU();
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
-        intakeSubsystem = new IntakeSubsystem(intakeMotor);
+        intakeSubsystem = new IntakeSubsystem(intakeMotor1, intakeMotor2);
 
         // Initialize ShooterSubsystem only if hardware is configured
         try {

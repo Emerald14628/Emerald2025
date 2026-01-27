@@ -117,7 +117,7 @@ public class TestOpClass extends LinearOpMode {
             if (gamepad1.a) {
                 if (!isIntakeActive) {
                     isIntakeActive = true;
-                    robot.intakeSubsystem.intakeArtifact();
+                    robot.intakeSubsystem.fullIntakeArtifact();
                 }
             }
             else {
@@ -237,7 +237,7 @@ public class TestOpClass extends LinearOpMode {
                         robot.shooterSubsystem.pushArtifactLeft();
                         isArtifactLeftActive = true;
                         //help with moving artifact to shooter
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                     }
                 }
                 if (gamepad1.right_bumper && !lastRightShooterState) {
@@ -251,7 +251,7 @@ public class TestOpClass extends LinearOpMode {
                         robot.shooterSubsystem.pushArtifactRight();
                         isArtifactRightActive = true;
                         //help with moving artifact to shooter
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                     }
                 }
                 if (gamepad1.x && !lastXButtonState) {
@@ -270,7 +270,7 @@ public class TestOpClass extends LinearOpMode {
                         isEjectingActive = true;
                         robot.shooterSubsystem.ejectArtifactLeft();
                         robot.shooterSubsystem.ejectArtifactRight();
-                    robot.intakeSubsystem.ejectArtifact();
+                    robot.intakeSubsystem.fullEjectArtifact();
                     }
                 }
                 else {

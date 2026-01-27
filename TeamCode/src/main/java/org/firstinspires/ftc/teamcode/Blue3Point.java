@@ -154,7 +154,7 @@ public class Blue3Point extends LinearOpMode {
                 case SHOOTRIGHT2ND:
                     if (!isRightShooterActive) {
                         robot.shooterSubsystem.pushArtifactRight();
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                         isArtifactRightActive = true;
                         isRightShooterActive = true;
                         rightArtifactStartTime = System.currentTimeMillis();  // Record start time

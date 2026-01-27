@@ -5,7 +5,36 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class ShooterSubsystem {  private final CRServo LeftShooter;
+public class ShooterSubsystem {
+    private static class PIDF
+    {
+        double P;
+        double I;
+        double D;
+        double F;
+
+        public PIDF(double pValue, double iValue, double dValue, double fValue) {
+            this.P = pValue;
+            this.I = iValue;
+            this.D = dValue;
+            this.F = fValue;
+        }
+    }
+    private final PIDF[] HogWheelCoefficients = {
+            new PIDF(.1, 0.0, 0.0, 13.9), //
+            new PIDF(0, 0, 0, 13.9),
+            new PIDF(167, 0, 0, 13.9)
+    };
+
+    private final double[] HogWheelSpeed = {
+            1019, 1176, 1458
+    };
+    public enum HogWheelPower {
+        POWER_1,
+        POWER_2,
+        POWER_3
+    }
+    private final CRServo LeftShooter;
     private final CRServo RightShooter;
     private final DcMotorEx HogWheel1;
     private final DcMotorEx HogWheel2;
@@ -40,16 +69,33 @@ public class ShooterSubsystem {  private final CRServo LeftShooter;
     public void pushArtifactLeft() {
         LeftShooter.setPower(-1.0);
     }
-        public void ejectArtifactLeft() {
+    public void ejectArtifactLeft() {
             LeftShooter.setPower(1.0);
         }
     public void stopArtifactLeft() {
         LeftShooter.setPower(0);
     }
     public void activateHogWheel(double power) {
-        HogWheel1.setPower(power);;
+        HogWheel1.setPower(power);
         HogWheel2.setPower(power);
     }
+
+    public void activateHogWheel(HogWheelPower power){
+        HogWheel1.setVelocityPIDFCoefficients(HogWheelCoefficients[power.ordinal()].P,
+                                              HogWheelCoefficients[power.ordinal()].I,
+                                              HogWheelCoefficients[power.ordinal()].D,
+                                              HogWheelCoefficients[power.ordinal()].F);
+        HogWheel2.setVelocityPIDFCoefficients(HogWheelCoefficients[power.ordinal()].P,
+                                              HogWheelCoefficients[power.ordinal()].I,
+                                              HogWheelCoefficients[power.ordinal()].D,
+                                              HogWheelCoefficients[power.ordinal()].F);
+
+        // Command velocity
+
+        HogWheel1.setVelocity(HogWheelSpeed[power.ordinal()]);
+        HogWheel2.setVelocity(HogWheelSpeed[power.ordinal()]);
+    }
+
     public double gethogwheel1power() {
         return HogWheel1.getPower();
     }
@@ -78,7 +124,7 @@ public class ShooterSubsystem {  private final CRServo LeftShooter;
         HogWheel1.setPower(0);
         HogWheel2.setPower(0);
     }
-    public void changeShooterAngleFoward() {
+    public void changeShooterAngleForward() {
         if (CurrentShooterState == 7)
         {
             CurrentShooterState = 0;
@@ -105,8 +151,7 @@ public class ShooterSubsystem {  private final CRServo LeftShooter;
     public void stopShooting() {
         LeftShooter.setPower(0);
         RightShooter.setPower(0);
-        HogWheel1.setPower(0);
-        HogWheel2.setPower(0);
+        stopHogWheel();
         ShooterLeftAngle.setPosition(0);
         ShooterRightAngle.setPosition(0);
     }
