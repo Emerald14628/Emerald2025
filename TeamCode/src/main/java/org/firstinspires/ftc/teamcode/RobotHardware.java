@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.*;
@@ -17,7 +15,9 @@ public class RobotHardware {
     public static final String BACK_LEFT_MOTOR = "backLeftMotor";
     public static final String FRONT_RIGHT_MOTOR = "frontRightMotor";
     public static final String BACK_RIGHT_MOTOR = "backRightMotor";
-
+    public static final String SHOOTER_LEFT_COLOR_SENSOR = "shooterLeftColorSensor";
+    public static final String SHOOTER_RIGHT_COLOR_SENSOR = "shooterRightColorSensor";
+    public static final String BLINKIN_SENSOR = "blinkinSensor";
     public static final String INTAKE_MOTOR_1 = "intakeMotor1";
     public static final String INTAKE_MOTOR_2 = "intakeMotor2";
     public static final String IMU_NAME = "imu";
@@ -37,17 +37,10 @@ public class RobotHardware {
     public DcMotor backRightMotor;
     public DcMotor intakeMotor1;
     public DcMotor intakeMotor2;
-    //public DcMotor armMotor;
-    //public DcMotor udarmMotor;
-    //public CRServo clawServo;
-    //public CRServo wristServo;
-    //public CRServo wristSpinServo;
-    //public TouchSensor armLimit;
     public ElapsedTime timer;
     public IMU imu;
     public GoBildaPinpointDriver pinpoint; // Pinpoint odometry computer
-    public ColorSensor leftColorSensor=new ColorSensor();
-    public ColorSensor rightColorSensor=new ColorSensor();
+     public ColorSubsystem colorSubsystem = new ColorSubsystem();
     public LimeLight limeLight=new LimeLight();
     private HardwareMap hardwareMap;
     public String shooterSubsystemError = null;
@@ -64,8 +57,7 @@ public class RobotHardware {
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
         intakeMotor1 = hardwareMap.dcMotor.get(INTAKE_MOTOR_1);
         intakeMotor2 = hardwareMap.dcMotor.get(INTAKE_MOTOR_2);
-        leftColorSensor.init(hardwareMap,"leftColorSensor");
-        rightColorSensor.init(hardwareMap,"rightColorSensor");
+        colorSubsystem.init(hardwareMap,SHOOTER_LEFT_COLOR_SENSOR, SHOOTER_RIGHT_COLOR_SENSOR, BLINKIN_SENSOR);
         limeLight.init(hardwareMap);
         //Create limelight object
         //armMotor = hardwareMap.dcMotor.get(ARM_MOTOR);

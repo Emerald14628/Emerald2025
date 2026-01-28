@@ -26,6 +26,7 @@ public class BlueAuto extends LinearOpMode {
 
         robot.driveSubsystem.calibrateIMU();
         robot.pinpoint.resetPosAndIMU();
+        robot.colorSubsystem.Update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -222,7 +223,7 @@ public class BlueAuto extends LinearOpMode {
             }
 
             telemetry.update();
-
+            robot.colorSubsystem.Update();
 
         }
     }

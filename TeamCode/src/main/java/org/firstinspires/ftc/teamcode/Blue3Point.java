@@ -25,6 +25,7 @@ public class Blue3Point extends LinearOpMode {
 
         robot.driveSubsystem.calibrateIMU();
         robot.pinpoint.resetPosAndIMU();
+        robot.colorSubsystem.Update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -221,7 +222,7 @@ public class Blue3Point extends LinearOpMode {
             }
 
             telemetry.update();
-
+            robot.colorSubsystem.Update();
 
         }
     }

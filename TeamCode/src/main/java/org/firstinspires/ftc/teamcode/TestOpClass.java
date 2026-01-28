@@ -2,11 +2,6 @@ package org.firstinspires.ftc.teamcode;
 //comment
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.ftccommon.SoundPlayer;
-
-import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
-import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 @TeleOp
 public class TestOpClass extends LinearOpMode {
@@ -19,7 +14,7 @@ public class TestOpClass extends LinearOpMode {
 
         // Variables for button state handling
         boolean lastDpadDownState = false;
-
+        robot.colorSubsystem.Update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -27,7 +22,6 @@ public class TestOpClass extends LinearOpMode {
         int enabledSound = hardwareMap.appContext.getResources().getIdentifier("field_centric_enabled", "raw", hardwareMap.appContext.getPackageName());
         int disabledSound = hardwareMap.appContext.getResources().getIdentifier("field_centric_disabled", "raw", hardwareMap.appContext.getPackageName());
         int goteamSound = hardwareMap.appContext.getResources().getIdentifier("go_team_emerald", "raw", hardwareMap.appContext.getPackageName());
-        int opModeLoopCounter = 0;
         boolean lastLeftShooterState= false;
         boolean lastRightShooterState= false;
         boolean isShootingActive= false;
@@ -41,6 +35,7 @@ public class TestOpClass extends LinearOpMode {
         boolean isArtifactRightActive= false;
         boolean isLeftShooterActive= false;
         boolean isRightShooterActive= false;
+
         long leftArtifactStartTime = 0;  // Track when left artifact pusher was activated
         long rightArtifactStartTime = 0;  // Track when right artifact pusher was activated
         long hogWheelStartTime = 0;  // Track when hogwheels were activated
@@ -125,6 +120,8 @@ public class TestOpClass extends LinearOpMode {
                     isIntakeActive = false;
                     robot.intakeSubsystem.stopIntake();
                 }}
+
+
             // Shooter controls - only if shooter subsystem initialized successfully
             if (robot.shooterSubsystem != null) {
 /*
@@ -332,8 +329,7 @@ public class TestOpClass extends LinearOpMode {
             }
 
             telemetry.update();
-
-            opModeLoopCounter ++;
+            robot.colorSubsystem.Update();
             // Handle arm controls using ArmSubsystem
             //robot.armSubsystem.handleArmMovement(
             //    gamepad2.dpad_up,

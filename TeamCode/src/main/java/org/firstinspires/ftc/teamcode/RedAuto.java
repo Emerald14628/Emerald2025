@@ -23,7 +23,7 @@ public class RedAuto extends LinearOpMode {
 
         // Variables for button state handling
         boolean lastDpadDownState = false;
-
+        robot.colorSubsystem.Update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -218,7 +218,7 @@ public class RedAuto extends LinearOpMode {
             }
 
             telemetry.update();
-
+            robot.colorSubsystem.Update();
 
         }
     }
