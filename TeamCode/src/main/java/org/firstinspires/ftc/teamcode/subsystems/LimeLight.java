@@ -17,6 +17,8 @@ public class LimeLight {
         GPP,
         UNKNOWN
     }
+    public static int RED_TARGET_ID = 24;
+    public static int BLUE_TARGET_ID = 20;
 public void init (HardwareMap hardwareMap) {
     limelight = hardwareMap.get(Limelight3A.class, "limelight");
     limelight.pipelineSwitch(0);
@@ -36,7 +38,6 @@ public void init (HardwareMap hardwareMap) {
                 Pose3D botPose = llResult.getBotpose_MT2();
                 // Get all detected AprilTags
                 java.util.List<LLResultTypes.FiducialResult> fiducialResults = llResult.getFiducialResults();
-                ;
 
                 if (!fiducialResults.isEmpty()) {
 
@@ -62,14 +63,55 @@ public void init (HardwareMap hardwareMap) {
         }
         return Motif.UNKNOWN;
     }
-    public TargetPosition getTargetPosition(double yaw) {
+    public TargetPosition getTargetPosition(double yaw, int tagId) {
        TargetPosition targetPosition = new TargetPosition();
         limelight.updateRobotOrientation(yaw);
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
-            targetPosition.x = llResult.getTx();
-        targetPosition.isValid = true;
+            java.util.List<LLResultTypes.FiducialResult> fiducialResults = llResult.getFiducialResults();
+
+            if (!fiducialResults.isEmpty()) {
+
+                int tagCount = 0;
+                for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                    tagCount++;
+                    int tag = fr.getFiducialId();
+
+                    // Check AprilTag ID for the goal tag and get the tx value
+                    if (tag == tagId) {
+                        targetPosition.x = llResult.getTx();
+                        targetPosition.isValid = true;
+                    }
+                }
+            }
+
         }
         return targetPosition;
+    }
+
+    // simple proportional turning control with Limelight.
+    // "proportional control" is a control algorithm in which the output is proportional to the error.
+    // in this case, we are going to return an angular velocity that is proportional to the
+    // "tx" value from the Limelight.
+    public double limelight_aim_proportional(double txValue)
+    {
+        // kP (constant of proportionality)
+        // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+        // if it is too high, the robot will oscillate around.
+        // if it is too low, the robot will never reach its target
+        // if the robot never turns in the correct direction, kP should be inverted.
+        double kP = .035;
+
+        // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of
+        // your limelight 3 feed, tx should return roughly 31 degrees.
+        double targetingAngularVelocity = txValue * kP;
+
+        // convert to radians per second for our drive method
+        targetingAngularVelocity *= Math.PI;
+
+        //invert since tx is positive when the target is to the right of the crosshair
+        targetingAngularVelocity *= -1.0;
+
+        return targetingAngularVelocity;
     }
 }

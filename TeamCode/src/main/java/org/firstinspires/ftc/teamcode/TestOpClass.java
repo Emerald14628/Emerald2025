@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
+import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
+
 @TeleOp
 public class TestOpClass extends LinearOpMode {
     private RobotHardware robot;
@@ -15,6 +18,18 @@ public class TestOpClass extends LinearOpMode {
         // Variables for button state handling
         boolean lastDpadDownState = false;
         robot.colorSubsystem.Update();
+        robot.limeLight.start();
+        int targetId = LimeLight.BLUE_TARGET_ID;
+        if(gamepad1.a) {
+            targetId = LimeLight.RED_TARGET_ID;
+        }
+        if(targetId == LimeLight.BLUE_TARGET_ID) {
+            telemetry.addLine("Blue Alliance selected");
+        }
+        else {
+            telemetry.addLine("Red Alliance selected");
+        }
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -39,7 +54,7 @@ public class TestOpClass extends LinearOpMode {
         long leftArtifactStartTime = 0;  // Track when left artifact pusher was activated
         long rightArtifactStartTime = 0;  // Track when right artifact pusher was activated
         long hogWheelStartTime = 0;  // Track when hogwheels were activated
-        robot.limeLight.start();
+
         while (opModeIsActive()) {
             // Handle field centric toggle with dpad_down
             /*boolean currentDpadDownState = gamepad1.dpad_down;
@@ -76,6 +91,7 @@ public class TestOpClass extends LinearOpMode {
             // Handle drive controls using DriveSubsystem
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
             if(gamepad1.dpad_left) {
                 y = 1.0;
             }
@@ -89,10 +105,21 @@ public class TestOpClass extends LinearOpMode {
             if(gamepad1.dpad_down){
                 y = -1.0;
             }
+            // When right_stick_button is pressed disable rotation from the right stick
+            // try to aim at the april tag. If the tag isn't in view just rotate.
+            if(gamepad1.right_stick_button) {
+                TargetPosition target = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), targetId);
+                if(target.isValid) {
+                    rx = robot.limeLight.limelight_aim_proportional(target.x);
+                }
+                else {
+                    rx = -.75;
+                }
+            }
             robot.driveSubsystem.handleDriveInput(
                 y,
                 x, // disable strafing for left joystick
-                gamepad1.right_stick_x,
+                rx,
                 gamepad1.left_trigger,
                 gamepad1.right_trigger);
 
