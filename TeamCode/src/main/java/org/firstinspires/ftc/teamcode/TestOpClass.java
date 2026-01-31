@@ -89,6 +89,11 @@ public class TestOpClass extends LinearOpMode {
                 //ModeLoopCounter = 0;
             }
             // Handle drive controls using DriveSubsystem
+            ColorSensor.DetectedColor FrontLeftColor= robot.frontLeftColorSensor.getDetectedColor(telemetry);
+            ColorSensor.DetectedColor FrontRightColor=robot.frontRightColorSensor.getDetectedColor(telemetry);
+            ColorSensor.DetectedColor BackLeftColor= robot.backLeftColorSensor.getDetectedColor(telemetry);
+            ColorSensor.DetectedColor BackRightColor=robot.backRightColorSensor.getDetectedColor(telemetry);
+
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
@@ -363,21 +368,9 @@ public class TestOpClass extends LinearOpMode {
             //    gamepad2.dpad_down
             //);
 
-            // Handle servo controls using ServoSubsystem
-            //robot.servoSubsystem.handleClawControl(
-            //    gamepad2.a,
-            //    gamepad2.b
-            //);
+            telemetry.update();
 
-            //robot.servoSubsystem.handleWristControl(
-            //    gamepad2.x,
-            //    gamepad2.y
-            //);
-
-            //robot.servoSubsystem.handleWristSpinControl(
-            //    gamepad2.left_bumper,
-            //    gamepad2.right_bumper
-            //);
+            opModeLoopCounter ++;
         }
     }
 }

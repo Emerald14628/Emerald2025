@@ -26,8 +26,6 @@ public class RobotHardware {
     // Subsystems
     public DriveSubsystem driveSubsystem;
     //public OdometrySubsystem odometrySubsystem;
-    //public ArmSubsystem armSubsystem;
-    //public ServoSubsystem servoSubsystem;
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
     // Hardware declarations (kept for compatibility)
@@ -35,8 +33,8 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backRightMotor;
-    public DcMotor intakeMotor1;
-    public DcMotor intakeMotor2;
+    public DcMotor intakeMotor;
+    public DcMotor frontIntakeMotor;
     public ElapsedTime timer;
     public IMU imu;
     public GoBildaPinpointDriver pinpoint; // Pinpoint odometry computer
@@ -55,19 +53,14 @@ public class RobotHardware {
         backLeftMotor = hardwareMap.dcMotor.get(BACK_LEFT_MOTOR);
         frontRightMotor = hardwareMap.dcMotor.get(FRONT_RIGHT_MOTOR);
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
-        intakeMotor1 = hardwareMap.dcMotor.get(INTAKE_MOTOR_1);
-        intakeMotor2 = hardwareMap.dcMotor.get(INTAKE_MOTOR_2);
-        colorSubsystem.init(hardwareMap,SHOOTER_LEFT_COLOR_SENSOR, SHOOTER_RIGHT_COLOR_SENSOR, BLINKIN_SENSOR);
+        intakeMotor = hardwareMap.dcMotor.get(INTAKE_MOTOR);
+        frontIntakeMotor = hardwareMap.dcMotor.get(FRONT_INTAKE_MOTOR);
+        frontLeftColorSensor.init(hardwareMap,"frontLeftColorSensor");
+        backLeftColorSensor.init(hardwareMap,"backLeftColorSensor");
+        frontRightColorSensor.init(hardwareMap,"frontRightColorSensor");
+        backRightColorSensor.init(hardwareMap,"backRightColorSensor");
         limeLight.init(hardwareMap);
         //Create limelight object
-        //armMotor = hardwareMap.dcMotor.get(ARM_MOTOR);
-        //udarmMotor = hardwareMap.dcMotor.get(UD_ARM_MOTOR);
-
-        // Initialize servos
-        //clawServo = hardwareMap.crservo.get("clawServo");
-        //wristServo = hardwareMap.crservo.get("wristServo");
-        //wristSpinServo = hardwareMap.crservo.get("wristSpinServo");
-        //armLimit = hardwareMap.touchSensor.get("armLimit");
 
         // Initialize IMU
         imu = hardwareMap.get(IMU.class, IMU_NAME);
@@ -106,7 +99,7 @@ public class RobotHardware {
         pinpoint.resetPosAndIMU();
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
-        intakeSubsystem = new IntakeSubsystem(intakeMotor1, intakeMotor2);
+        intakeSubsystem = new IntakeSubsystem(intakeMotor, frontIntakeMotor);
 
         // Initialize ShooterSubsystem only if hardware is configured
         try {
@@ -118,14 +111,10 @@ public class RobotHardware {
         }
 
         //odometrySubsystem = new OdometrySubsystem(pinpoint);
-        //armSubsystem = new ArmSubsystem(armMotor, udarmMotor, armLimit);
-        //servoSubsystem = new ServoSubsystem(clawServo, wristServo, wristSpinServo);
     }
 
     // Delegate methods to subsystems
     public void setDrivePowers(double fl, double bl, double fr, double br) {
         driveSubsystem.handleDriveInput(-fl, 0, 0, 0, 0);
     }
-
-    //public void resetArmEncoders() {armSubsystem.resetEncoders();}
 }
