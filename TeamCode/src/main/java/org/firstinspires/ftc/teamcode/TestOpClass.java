@@ -29,7 +29,7 @@ public class TestOpClass extends LinearOpMode {
         else {
             telemetry.addLine("Red Alliance selected");
         }
-
+    telemetry.update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -89,11 +89,6 @@ public class TestOpClass extends LinearOpMode {
                 //ModeLoopCounter = 0;
             }
             // Handle drive controls using DriveSubsystem
-            ColorSensor.DetectedColor FrontLeftColor= robot.frontLeftColorSensor.getDetectedColor(telemetry);
-            ColorSensor.DetectedColor FrontRightColor=robot.frontRightColorSensor.getDetectedColor(telemetry);
-            ColorSensor.DetectedColor BackLeftColor= robot.backLeftColorSensor.getDetectedColor(telemetry);
-            ColorSensor.DetectedColor BackRightColor=robot.backRightColorSensor.getDetectedColor(telemetry);
-
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
@@ -105,10 +100,10 @@ public class TestOpClass extends LinearOpMode {
             }
 
             if(gamepad1.dpad_up) {
-                y = 1.0;
+                y = -1.0;
             }
             if(gamepad1.dpad_down){
-                y = -1.0;
+                y = 1.0;
             }
             // When right_stick_button is pressed disable rotation from the right stick
             // try to aim at the april tag. If the tag isn't in view just rotate.
@@ -118,7 +113,7 @@ public class TestOpClass extends LinearOpMode {
                     rx = robot.limeLight.limelight_aim_proportional(target.x);
                 }
                 else {
-                    rx = -.75;
+                    rx = -0.25;
                 }
             }
             robot.driveSubsystem.handleDriveInput(
@@ -369,8 +364,6 @@ public class TestOpClass extends LinearOpMode {
             //);
 
             telemetry.update();
-
-            opModeLoopCounter ++;
         }
     }
 }
