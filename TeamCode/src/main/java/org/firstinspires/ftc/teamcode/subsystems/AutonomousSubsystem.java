@@ -98,7 +98,9 @@ public class AutonomousSubsystem {
                         robot.shooterSubsystem.stopArtifactLeft();
                         isArtifactLeftActive = false;
                         leftArtifactStartTime = 0;
-                        currentState = States.SHOOTRIGHT2ND;
+                        robot.shooterSubsystem.stopShooting();
+                        currentState = States.NOTSTARTED;
+                        shootingFinished = true;
                     }
                 }
                 break;
@@ -115,7 +117,7 @@ public class AutonomousSubsystem {
                         isArtifactRightActive = false;
                         isRightShooterActive = false;
                         rightArtifactStartTime = 0;
-                        currentState = States.SHOOTLEFT;
+                        currentState = States.SHOOTRIGHT2ND;
                     }
                 }
                 break;
@@ -131,10 +133,8 @@ public class AutonomousSubsystem {
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         isArtifactRightActive = false;
                         rightArtifactStartTime = 0;
-                        robot.shooterSubsystem.stopShooting();
-                        currentState = States.NOTSTARTED;
+                        currentState = States.SHOOTLEFT;
                         robot.intakeSubsystem.stopIntake();
-                        shootingFinished = true;
                     }
                 }
                 break;
@@ -162,9 +162,7 @@ public class AutonomousSubsystem {
                         robot.shooterSubsystem.stopArtifactLeft();
                         isArtifactLeftActive = false;
                         leftArtifactStartTime = 0;
-                        robot.shooterSubsystem.stopShooting();
-                        currentState = States.NOTSTARTED;
-                        shootingFinished = true;
+                        currentState = States.SHOOTRIGHT2ND;
                     }
                 }
                 break;
@@ -178,10 +176,11 @@ public class AutonomousSubsystem {
                 } else if (isArtifactRightActive && rightArtifactStartTime > 0) {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
+                        robot.shooterSubsystem.stopArtifactRight();
                         isArtifactRightActive = false;
                         isRightShooterActive = false;
                         rightArtifactStartTime = 0;
-                        currentState = States.SHOOTRIGHT2ND;
+                        currentState = States.SHOOTLEFT;
                     }
                 }
                 break;
@@ -197,8 +196,9 @@ public class AutonomousSubsystem {
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         isArtifactRightActive = false;
                         rightArtifactStartTime = 0;
-                        currentState = States.SHOOTLEFT;
-                        robot.intakeSubsystem.stopIntake();
+                        robot.shooterSubsystem.stopShooting();
+                        currentState = States.NOTSTARTED;
+                        shootingFinished = true;
                     }
                 }
                 break;
