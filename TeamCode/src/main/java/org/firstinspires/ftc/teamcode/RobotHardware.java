@@ -44,7 +44,7 @@ public class RobotHardware {
     public LimeLight limeLight=new LimeLight();
     private HardwareMap hardwareMap;
     public String shooterSubsystemError = null;
-
+    public AutonomousSubsystem autonomousSubsystem = new AutonomousSubsystem();
     public RobotHardware(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }

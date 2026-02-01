@@ -7,15 +7,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
+import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 
 @Autonomous
 public class BlueAuto extends LinearOpMode {
 
     enum States{
-        TURNLEFTFORTYFIVE, MOVEFORWARD, TURNAROUND, SHOOTLEFT, SHOOTRIGHT,SHOOTRIGHT2ND,TURNRIGHTFORTYFIVE, FINALPOSITION, END
+        TURNTOLAUNCHZONE, MOVEFORWARD, AIMATTARGET, SHOOTGPP, SHOOTPGP, SHOOTPPG,TURNTOFINALPOSITION, FINALPOSITION, END
     }
     private RobotHardware robot;
-    private States currentState = States.TURNLEFTFORTYFIVE;
+    private States currentState = States.TURNTOLAUNCHZONE;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new RobotHardware(hardwareMap);
@@ -23,25 +25,19 @@ public class BlueAuto extends LinearOpMode {
 
         // Variables for button state handling
         boolean lastDpadDownState = false;
+        LimeLight.Motif currentMotif = LimeLight.Motif.UNKNOWN;
 
         robot.driveSubsystem.calibrateIMU();
         robot.pinpoint.resetPosAndIMU();
         robot.colorSubsystem.Update();
+        robot.limeLight.start();
         waitForStart();
 
         if (isStopRequested()) return;
         // Prepare the sound players
-        int enabledSound = hardwareMap.appContext.getResources().getIdentifier("field_centric_enabled", "raw", hardwareMap.appContext.getPackageName());
-        int disabledSound = hardwareMap.appContext.getResources().getIdentifier("field_centric_disabled", "raw", hardwareMap.appContext.getPackageName());
-        int goteamSound = hardwareMap.appContext.getResources().getIdentifier("go_team_emerald", "raw", hardwareMap.appContext.getPackageName());
         boolean isShootingActive= false;
-        boolean isArtifactLeftActive= false;
-        boolean isArtifactRightActive= false;
-        boolean isLeftShooterActive= false;
-        boolean isRightShooterActive= false;
-        long leftArtifactStartTime = 0;  // Track when left artifact pusher was activated
-        long rightArtifactStartTime = 0;  // Track when right artifact pusher was activated
-       // robot.limeLight.start();
+
+        double aimRx = 0.0;
 
         robot.pinpoint.initialize();
 
@@ -49,14 +45,17 @@ public class BlueAuto extends LinearOpMode {
         if (!isShootingActive) {
             robot.shooterSubsystem.activateHogWheel(.65);
             isShootingActive = true;
-            leftArtifactStartTime = 0;  // Res
         }
         while (opModeIsActive()) {
 
             robot.pinpoint.update();
+            if(currentMotif == LimeLight.Motif.UNKNOWN)
+            {
+                currentMotif = robot.limeLight.readMotif(robot.imu.getRobotYawPitchRollAngles().getYaw());
+            }
             switch(currentState)
             {
-                case TURNLEFTFORTYFIVE:
+                case TURNTOLAUNCHZONE:
                     if(robot.driveSubsystem.getHeading() < 45.0){
                     // Handle drive controls using DriveSubsystem
                     robot.driveSubsystem.handleDriveInput(
@@ -89,90 +88,61 @@ public class BlueAuto extends LinearOpMode {
                                 0.0, 0.0,
                                 0.0,
                                 0.0,0.0);
-                        currentState = States.TURNAROUND;
+                        currentState = States.AIMATTARGET;
                     }
                     break;
-                case TURNAROUND:
-                    if(robot.driveSubsystem.getHeading() > -100.0){
-                        // Handle drive controls using DriveSubsystem
-                        robot.driveSubsystem.handleDriveInput(
-                                0.0, 0.0,
-                                0.6,
-                                0.0,0.0);
+                case AIMATTARGET:
+                    TargetPosition aprilTagLocation = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), LimeLight.BLUE_TARGET_ID);
+                    // If the tagLocation isn't valid then the tag isn't on the FOV
+                    if(!aprilTagLocation.isValid) {
+                        aimRx = -0.5;
                     }
+                    // x location should be negative since the cross hair will be to the right of
+                    //  the target
+                    else if(aprilTagLocation.x < -0.5){
+                        aimRx = robot.limeLight.limelight_aim_proportional(aprilTagLocation.x);
+                    }
+                    // Aiming is finished now shoot.
                     else {
-                        robot.driveSubsystem.handleDriveInput(
-                                0.0, 0.0,
-                                0.0,
-                                0.0,0.0);
-                        currentState = States.SHOOTLEFT;
+                        aimRx = 0.0;
+                        if(currentMotif == LimeLight.Motif.PPG ) {
+                            currentState = States.SHOOTPPG;
+                        }
+                        else if(currentMotif == LimeLight.Motif.PGP){
+                            currentState = States.SHOOTPGP;
+                        }
+                        // Catch if GPP or UNKNOWN
+                        else {
+                            currentState = States.SHOOTGPP;
+                        }
+                    }
+                    // Handle drive controls using DriveSubsystem
+                    robot.driveSubsystem.handleDriveInput(
+                            0.0, 0.0,
+                            aimRx,
+                            0.0,0.0);
+                    break;
+                case SHOOTGPP:
+                    // Wait for shooting to finish
+                    if (robot.autonomousSubsystem.shootGPPMotif(robot)) {
+                        currentState = States.FINALPOSITION;
                     }
                     break;
-                case SHOOTLEFT:
-                    if (!isLeftShooterActive) {
-                            //------------------------
-                            //code to use odemetry to move robot to first shooting position goes here
-                            //code to adjust shooting angle goes here
-                            //------------------------
-                            // Shoot left
-                            robot.shooterSubsystem.pushArtifactLeft();
-                           isLeftShooterActive= true;
-                            isArtifactLeftActive = true;
-                            leftArtifactStartTime = System.currentTimeMillis();  // Record start time
-                        }
-                    else  if (isArtifactLeftActive && leftArtifactStartTime > 0) {
-                        long elapsedTime = System.currentTimeMillis() - leftArtifactStartTime;
-                        if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                            robot.shooterSubsystem.stopArtifactLeft();
-                            isArtifactLeftActive = false;
-                            leftArtifactStartTime = 0;
-                            currentState = States.SHOOTRIGHT;
-                            robot.shooterSubsystem.activateHogWheel(0.65);
-                        }
+
+                case SHOOTPGP:
+                    // Wait for shooting to finish
+                    if (robot.autonomousSubsystem.shootPGPMotif(robot)) {
+                        currentState = States.FINALPOSITION;
                     }
                     break;
-                case SHOOTRIGHT:
-                    if (!isRightShooterActive) {
-                        //code to use odemetry to move robot to first shooting position goes here
-                        //code to adjust shooting angle goes here
-                        //------------------------
-                        // Shoot left
-                        robot.shooterSubsystem.pushArtifactRight();
-                        isArtifactRightActive = true;
-                        isRightShooterActive = true;
-                        rightArtifactStartTime = System.currentTimeMillis();  // Record start time
-                    }
-                    else  if (isArtifactRightActive && rightArtifactStartTime > 0) {
-                        long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
-                        if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                            isArtifactRightActive = false;
-                            isRightShooterActive  = false;
-                            rightArtifactStartTime = 0;
-                            currentState = States.SHOOTRIGHT2ND;
-                            robot.shooterSubsystem.activateHogWheel(0.70);
-                        }
+
+                case SHOOTPPG:
+                    // Wait for shooting to finish
+                    if (robot.autonomousSubsystem.shootPPGMotif(robot)) {
+                        currentState = States.FINALPOSITION;
                     }
                     break;
-                case SHOOTRIGHT2ND:
-                    if (!isRightShooterActive) {
-                        robot.shooterSubsystem.pushArtifactRight();
-                        robot.intakeSubsystem.intakeArtifactStage2();
-                        isArtifactRightActive = true;
-                        isRightShooterActive = true;
-                        rightArtifactStartTime = System.currentTimeMillis();  // Record start time
-                    }
-                    else  if (isArtifactRightActive && rightArtifactStartTime > 0) {
-                        long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
-                        if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                            isArtifactRightActive = false;
-                            rightArtifactStartTime = 0;
-                            robot.shooterSubsystem.stopShooting();
-                            currentState = States.TURNRIGHTFORTYFIVE;
-                            robot.intakeSubsystem.stopIntake();
-                        }
-                    }
-                        break;
-                        case TURNRIGHTFORTYFIVE:
+                case TURNTOFINALPOSITION:
                     if(robot.driveSubsystem.getHeading() < -25.0){
                         // Handle drive controls using DriveSubsystem
                         robot.driveSubsystem.handleDriveInput(
