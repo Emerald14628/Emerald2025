@@ -37,13 +37,19 @@ public class ColorSubsystem {
     }
     private final ColorSensor shooterLeftColorSensor= new ColorSensor();
     private final ColorSensor shooterRightColorSensor= new ColorSensor();
+    private final ColorSensor frontLeftColorSensor= new ColorSensor();
+    private final ColorSensor frontRightColorSensor= new ColorSensor();
     private final BlikinColorDevice blinkinDevice = new BlikinColorDevice();
     public DetectedColor shooterLeftColor = DetectedColor.UNKNOWN;
     public DetectedColor shooterRightColor = DetectedColor.UNKNOWN;
+    public DetectedColor frontLeftColor = DetectedColor.UNKNOWN;
+    public DetectedColor frontRightColor = DetectedColor.UNKNOWN;
 
-    public void init(HardwareMap hwMp, String leftShooterName, String rightShooterName, String blinkingName) {
+    public void init(HardwareMap hwMp, String leftShooterName, String rightShooterName, String leftFront, String rightFront, String blinkingName) {
         shooterLeftColorSensor.init(hwMp, leftShooterName);
         shooterRightColorSensor.init(hwMp, rightShooterName);
+        frontLeftColorSensor.init(hwMp, leftFront);
+        frontRightColorSensor.init(hwMp, rightFront);
         blinkinDevice.init(hwMp, blinkingName);
     }
 
@@ -51,6 +57,8 @@ public class ColorSubsystem {
         // Color sensors
         shooterRightColor = shooterRightColorSensor.getDetectedColor();
         shooterLeftColor = shooterLeftColorSensor.getDetectedColor();
+        frontRightColor = frontRightColorSensor.getDetectedColor();
+        frontLeftColor = frontLeftColorSensor.getDetectedColor();
 
         // First Case is left color is unknown
         if(shooterLeftColor == DetectedColor.UNKNOWN) {

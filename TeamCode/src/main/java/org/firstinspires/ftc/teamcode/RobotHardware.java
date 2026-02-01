@@ -15,8 +15,10 @@ public class RobotHardware {
     public static final String BACK_LEFT_MOTOR = "backLeftMotor";
     public static final String FRONT_RIGHT_MOTOR = "frontRightMotor";
     public static final String BACK_RIGHT_MOTOR = "backRightMotor";
-    public static final String SHOOTER_LEFT_COLOR_SENSOR = "frontLeftColorSensor";
-    public static final String SHOOTER_RIGHT_COLOR_SENSOR = "frontRightColorSensor";
+    public static final String SHOOTER_LEFT_COLOR_SENSOR = "backLeftColorSensor";
+    public static final String SHOOTER_RIGHT_COLOR_SENSOR = "backRightColorSensor";
+    public static final String FRONT_LEFT_COLOR_SENSOR = "frontLeftColorSensor";
+    public static final String FRONT_RIGHT_COLOR_SENSOR = "frontRightColorSensor";
     public static final String BLINKIN_SENSOR = "LEDStrip";
     public static final String INTAKE_MOTOR = "intakeMotor";
     public static final String FRONT_INTAKE_MOTOR = "frontIntakeMotor";
@@ -55,7 +57,8 @@ public class RobotHardware {
         backRightMotor = hardwareMap.dcMotor.get(BACK_RIGHT_MOTOR);
         intakeMotor = hardwareMap.dcMotor.get(INTAKE_MOTOR);
         frontIntakeMotor = hardwareMap.dcMotor.get(FRONT_INTAKE_MOTOR);
-        colorSubsystem.init(hardwareMap, SHOOTER_LEFT_COLOR_SENSOR, SHOOTER_RIGHT_COLOR_SENSOR, BLINKIN_SENSOR);
+        colorSubsystem.init(hardwareMap, SHOOTER_LEFT_COLOR_SENSOR, SHOOTER_RIGHT_COLOR_SENSOR,
+                                         FRONT_LEFT_COLOR_SENSOR, FRONT_RIGHT_COLOR_SENSOR, BLINKIN_SENSOR);
         limeLight.init(hardwareMap);
         //Create limelight object
 

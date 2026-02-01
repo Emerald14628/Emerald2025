@@ -29,7 +29,7 @@ public class TestOpClass extends LinearOpMode {
         else {
             telemetry.addLine("Red Alliance selected");
         }
-    telemetry.update();
+        telemetry.update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -93,10 +93,10 @@ public class TestOpClass extends LinearOpMode {
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
             if(gamepad1.dpad_left) {
-                x = 1.0;
+                x = -1.0;
             }
             if(gamepad1.dpad_right){
-               x = -1.0;
+               x = 1.0;
             }
 
             if(gamepad1.dpad_up) {
@@ -343,6 +343,8 @@ public class TestOpClass extends LinearOpMode {
             lastYButtonState = gamepad1.y;
             telemetry.addData("Version:", "2.0.1");
             telemetry.addData("Description:", "turn on intake when shooter servos turned on");
+            telemetry.addData("Left Shooter Color: ", robot.colorSubsystem.shooterLeftColor);
+            telemetry.addData("Right Shoorter Color: ", robot.colorSubsystem.shooterRightColor);
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Field Centric", robot.driveSubsystem.isFieldCentric() ? "Enabled" : "Disabled");
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());
