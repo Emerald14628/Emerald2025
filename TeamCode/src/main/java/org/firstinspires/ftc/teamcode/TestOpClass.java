@@ -93,10 +93,10 @@ public class TestOpClass extends LinearOpMode {
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
             if(gamepad1.dpad_left) {
-                y = 1.0;
+                x = 1.0;
             }
             if(gamepad1.dpad_right){
-               y = -1.0;
+               x = -1.0;
             }
 
             if(gamepad1.dpad_up) {
@@ -113,7 +113,7 @@ public class TestOpClass extends LinearOpMode {
                     rx = robot.limeLight.limelight_aim_proportional(target.x);
                 }
                 else {
-                    rx = -0.25;
+                    rx = -0.5;
                 }
             }
             robot.driveSubsystem.handleDriveInput(

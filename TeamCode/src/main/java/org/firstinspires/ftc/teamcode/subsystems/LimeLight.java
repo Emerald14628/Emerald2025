@@ -100,18 +100,10 @@ public void init (HardwareMap hardwareMap) {
         // if it is too high, the robot will oscillate around.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .015;
+        double kP = .25;
 
-        // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of
-        // your limelight 3 feed, tx should return roughly 31 degrees.
-        double targetingAngularVelocity = txValue * kP;
-
-        // convert to radians per second for our drive method
-        targetingAngularVelocity *= Math.PI;
-
-        //invert since tx is positive when the target is to the right of the crosshair
-        //targetingAngularVelocity *= -1.0;
-
-        return targetingAngularVelocity;
+        // tx ranges from (-hfov/2) to (hfov/2) in degrees. Limelight 3A hfov is 54.5
+        // Normalize the txValue to [-1,0] and multiply by the kp value.
+        return (txValue/27.25) * kP;
     }
 }
