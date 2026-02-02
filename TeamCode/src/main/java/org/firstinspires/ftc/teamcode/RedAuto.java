@@ -120,21 +120,21 @@ public class RedAuto extends LinearOpMode {
                 case SHOOTGPP:
                     // Wait for shooting to finish
                     if (robot.autonomousSubsystem.shootGPPMotif(robot)) {
-                        currentState = States.FINALPOSITION;
+                        currentState = States.TURNTOFINALPOSITION;
                     }
                     break;
 
                 case SHOOTPGP:
                     // Wait for shooting to finish
                     if (robot.autonomousSubsystem.shootPGPMotif(robot)) {
-                        currentState = States.FINALPOSITION;
+                        currentState = States.TURNTOFINALPOSITION;
                     }
                     break;
 
                 case SHOOTPPG:
                     // Wait for shooting to finish
                     if (robot.autonomousSubsystem.shootPPGMotif(robot)) {
-                        currentState = States.FINALPOSITION;
+                        currentState = States.TURNTOFINALPOSITION;
                     }
                     break;
                 case TURNTOFINALPOSITION:
@@ -178,6 +178,7 @@ public class RedAuto extends LinearOpMode {
 
             telemetry.addData("Version:", "1.0.7");
             telemetry.addData("Description:", "corrected red auto turn after shooting");
+            telemetry.addData("Current Motif: ", currentMotif.toString());
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Auto Step", currentState.toString());
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());

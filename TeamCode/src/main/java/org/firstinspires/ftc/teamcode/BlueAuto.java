@@ -125,21 +125,21 @@ public class BlueAuto extends LinearOpMode {
                 case SHOOTGPP:
                     // Wait for shooting to finish
                     if (robot.autonomousSubsystem.shootGPPMotif(robot)) {
-                        currentState = States.FINALPOSITION;
+                        currentState = States.TURNTOFINALPOSITION;
                     }
                     break;
 
                 case SHOOTPGP:
                     // Wait for shooting to finish
                     if (robot.autonomousSubsystem.shootPGPMotif(robot)) {
-                        currentState = States.FINALPOSITION;
+                        currentState = States.TURNTOFINALPOSITION;
                     }
                     break;
 
                 case SHOOTPPG:
                     // Wait for shooting to finish
                     if (robot.autonomousSubsystem.shootPPGMotif(robot)) {
-                        currentState = States.FINALPOSITION;
+                        currentState = States.TURNTOFINALPOSITION;
                     }
                     break;
                 case TURNTOFINALPOSITION:
@@ -183,6 +183,7 @@ public class BlueAuto extends LinearOpMode {
 
             telemetry.addData("Version:", "1.0.6");
             telemetry.addData("Description:", "added FCD recalibration");
+            telemetry.addData("Current Motif: ", currentMotif.toString());
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Auto Step", currentState.toString());
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());

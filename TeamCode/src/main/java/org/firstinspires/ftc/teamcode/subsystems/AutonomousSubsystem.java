@@ -33,6 +33,7 @@ public class AutonomousSubsystem {
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         robot.shooterSubsystem.stopArtifactLeft();
                         isArtifactLeftActive = false;
+                        isLeftShooterActive = false;
                         leftArtifactStartTime = 0;
                         currentState = States.SHOOTRIGHT;
                     }
@@ -66,6 +67,7 @@ public class AutonomousSubsystem {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         isArtifactRightActive = false;
+                        isRightShooterActive = false;
                         rightArtifactStartTime = 0;
                         robot.shooterSubsystem.stopShooting();
                         currentState = States.NOTSTARTED;
@@ -97,6 +99,7 @@ public class AutonomousSubsystem {
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         robot.shooterSubsystem.stopArtifactLeft();
                         isArtifactLeftActive = false;
+                        isLeftShooterActive = false;
                         leftArtifactStartTime = 0;
                         robot.shooterSubsystem.stopShooting();
                         currentState = States.NOTSTARTED;
@@ -132,6 +135,7 @@ public class AutonomousSubsystem {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         isArtifactRightActive = false;
+                        isRightShooterActive = false;
                         rightArtifactStartTime = 0;
                         currentState = States.SHOOTLEFT;
                         robot.intakeSubsystem.stopIntake();
@@ -161,6 +165,7 @@ public class AutonomousSubsystem {
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         robot.shooterSubsystem.stopArtifactLeft();
                         isArtifactLeftActive = false;
+                        isLeftShooterActive = false;
                         leftArtifactStartTime = 0;
                         currentState = States.SHOOTRIGHT2ND;
                     }
@@ -195,8 +200,10 @@ public class AutonomousSubsystem {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         isArtifactRightActive = false;
+                        isRightShooterActive = false;
                         rightArtifactStartTime = 0;
                         robot.shooterSubsystem.stopShooting();
+                        robot.intakeSubsystem.stopIntake();
                         currentState = States.NOTSTARTED;
                         shootingFinished = true;
                     }

@@ -128,6 +128,7 @@ public class Red3Point extends LinearOpMode {
 
             telemetry.addData("Version:", "1.0.7");
             telemetry.addData("Description:", "corrected red auto turn after shooting");
+            telemetry.addData("Current Motif: ", currentMotif.toString());
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Auto Step", currentState.toString());
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());
