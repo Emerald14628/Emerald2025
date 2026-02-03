@@ -21,13 +21,17 @@ public class ShooterSubsystem {
         }
     }
     private final PIDF[] HogWheelCoefficients = {
-            new PIDF(.1, 0.0, 0.0, 13.9), //
-            new PIDF(0, 0, 0, 13.9),
-            new PIDF(167, 0, 0, 13.9)
+            new PIDF(230.4, 0.0, 0.0, 13.9), //
+            new PIDF(230.4, 0, 0, 13.9),
+            new PIDF(230.4, 0, 0, 13.9)
     };
 
-    private final double[] HogWheelSpeed = {
-            1019, 1176, 1458
+    private final double[] HogWheel1Speed = {
+            1287, 1582, 2300
+    };
+
+    private final double[] HogWheel2Speed = {
+            1287, 1482, 2100
     };
     public enum HogWheelPower {
         POWER_1,
@@ -92,8 +96,8 @@ public class ShooterSubsystem {
 
         // Command velocity
 
-        HogWheel1.setVelocity(HogWheelSpeed[power.ordinal()]);
-        HogWheel2.setVelocity(HogWheelSpeed[power.ordinal()]);
+        HogWheel1.setVelocity(HogWheel1Speed[power.ordinal()]);
+        HogWheel2.setVelocity(HogWheel2Speed[power.ordinal()]);
     }
 
     public double gethogwheel1power() {

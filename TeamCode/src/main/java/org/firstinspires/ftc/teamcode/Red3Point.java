@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 @Autonomous
 public class Red3Point extends LinearOpMode {
@@ -43,7 +44,7 @@ public class Red3Point extends LinearOpMode {
         robot.pinpoint.initialize();
         robot.pinpoint.resetPosAndIMU();
         if (!isShootingActive) {
-            robot.shooterSubsystem.activateHogWheel(.95);
+            robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_3);
             isShootingActive = true;
             leftArtifactStartTime = 0;  // Res
         }
