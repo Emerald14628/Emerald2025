@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 
 @Autonomous
@@ -39,7 +40,7 @@ public class RedAuto extends LinearOpMode {
         robot.pinpoint.initialize();
         robot.pinpoint.resetPosAndIMU();
         if (!isShootingActive) {
-            robot.shooterSubsystem.activateHogWheel(.65);
+            robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_1);
             isShootingActive = true;
         }
             while (opModeIsActive()) {
