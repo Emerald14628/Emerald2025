@@ -33,10 +33,10 @@ public class BlikinColorDevice {
     }
 
     public void setLeftGreenRightUnknown(){
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_LIGHT_CHASE);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_STROBE);
     }
     public void setLeftPurpleRightUnknown(){
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_LIGHT_CHASE);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_STROBE);
     }
 
     public void setLeftUnknownRightGreen(){
