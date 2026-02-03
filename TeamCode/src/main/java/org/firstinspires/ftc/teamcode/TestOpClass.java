@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 
 @TeleOp
@@ -285,7 +286,7 @@ public class TestOpClass extends LinearOpMode {
                         //stop intake to prevent artifact from reloading; maybe we want to leave intake on?
                         robot.intakeSubsystem.stopIntake();
                     } else {
-                        robot.shooterSubsystem.activateHogWheel(0.75);
+                        robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_2);
                         isShootingActive = true;
                     }
                 }
@@ -314,7 +315,7 @@ public class TestOpClass extends LinearOpMode {
                             //stop intake to prevent artifact from reloading; maybe we want to leave intake on?
                             robot.intakeSubsystem.stopIntake();
                         } else {
-                            robot.shooterSubsystem.activateHogWheel(0.95);
+                            robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_3);
                             isShootingActive = true;
                         }
                     }
@@ -325,7 +326,7 @@ public class TestOpClass extends LinearOpMode {
                                 //stop intake to prevent artifact from reloading; maybe we want to leave intake on?
                                 robot.intakeSubsystem.stopIntake();
                             } else {
-                                robot.shooterSubsystem.activateHogWheel(0.65);
+                                robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_1);
                                 isShootingActive = true;
                             }
                     }/*

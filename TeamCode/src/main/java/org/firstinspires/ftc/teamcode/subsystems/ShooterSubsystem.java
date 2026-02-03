@@ -21,13 +21,13 @@ public class ShooterSubsystem {
         }
     }
     private final PIDF[] HogWheelCoefficients = {
-            new PIDF(.1, 0.0, 0.0, 13.9), //
-            new PIDF(0, 0, 0, 13.9),
-            new PIDF(167, 0, 0, 13.9)
+            new PIDF(230.4, 0.0, 0.0, 13.9), //
+            new PIDF(230.4, 0, 0, 13.9),
+            new PIDF(230.4, 0, 0, 13.9)
     };
 
     private final double[] HogWheelSpeed = {
-            1019, 1176, 1458
+            1287, 1582, 2100
     };
     public enum HogWheelPower {
         POWER_1,

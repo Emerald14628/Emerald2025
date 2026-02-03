@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class PIDFTuning extends LinearOpMode {
     DcMotorEx motor1, motor2;
     double p = 0.0, f = 0.0; // Starting default values
-    double highVeloctiy = 1558;
-    double lowVelocity = 600;
+    double highVeloctiy = 1061;
+    double lowVelocity = 500;
     double targetVelocity = highVeloctiy; // Ticks per second (adjust based on your RPM)
 
     double[] stepSizes = {10.0, 1.0, 0.1, 0.001, 0.0001};
@@ -28,6 +28,10 @@ public class PIDFTuning extends LinearOpMode {
         motor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
        boolean yWasPressed = false;
        boolean bWasPressed = false;
+        boolean dupWasPressed = false;
+        boolean ddownWasPressed = false;
+        boolean dleftWasPressed = false;
+        boolean drightWasPressed = false;
         // Update motor PIDF coefficients
         motor1.setVelocityPIDFCoefficients(p, 0, 0, f);
         motor2.setVelocityPIDFCoefficients(p, 0, 0, f);
@@ -67,13 +71,18 @@ public class PIDFTuning extends LinearOpMode {
             else if(!gamepad1.b && bWasPressed){
                 bWasPressed = false;
             }
-            if (gamepad1.dpad_up) p += stepSizes[stepIndex];
-            if (gamepad1.dpad_down) p -= stepSizes[stepIndex];
+            if (gamepad1.dpad_up && !dupWasPressed){
+                p += stepSizes[stepIndex];
+            }
+            if (gamepad1.dpad_down && !ddownWasPressed) p -= stepSizes[stepIndex];
 
             // D-pad Left/Right to adjust F
-            if (gamepad1.dpad_right) f += stepSizes[stepIndex];
-            if (gamepad1.dpad_left) f -= stepSizes[stepIndex];
-
+            if (gamepad1.dpad_right && !drightWasPressed) f += stepSizes[stepIndex];
+            if (gamepad1.dpad_left && !dleftWasPressed) f -= stepSizes[stepIndex];
+dupWasPressed = gamepad1.dpad_up;
+ddownWasPressed = gamepad1.dpad_down;
+dleftWasPressed = gamepad1.dpad_left;
+drightWasPressed = gamepad1.dpad_right;
             // Update motor PIDF coefficients
             motor1.setVelocityPIDFCoefficients(p, 0, 0, f);
             motor2.setVelocityPIDFCoefficients(p, 0, 0, f);
