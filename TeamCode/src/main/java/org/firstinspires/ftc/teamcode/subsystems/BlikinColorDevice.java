@@ -26,17 +26,17 @@ public class BlikinColorDevice {
         blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 }
     public void setLeftGreenRightPurple () {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_END_TO_END_BLEND_1_TO_2);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_SPARKLE_1_ON_2);
     }
     public void setLeftPurpleRightGreen () {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_END_TO_END_BLEND);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_SPARKLE_2_ON_1);
     }
 
     public void setLeftGreenRightUnknown(){
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_LIGHT_CHASE);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_STROBE);
     }
     public void setLeftPurpleRightUnknown(){
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_LIGHT_CHASE);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_STROBE);
     }
 
     public void setLeftUnknownRightGreen(){
