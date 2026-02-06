@@ -2,11 +2,10 @@ package org.firstinspires.ftc.teamcode;
 //comment
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.ftccommon.SoundPlayer;
 
-import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
+import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 
 @TeleOp
 public class TestOpClass extends LinearOpMode {
@@ -19,7 +18,19 @@ public class TestOpClass extends LinearOpMode {
 
         // Variables for button state handling
         boolean lastDpadDownState = false;
-
+        robot.colorSubsystem.Update();
+        robot.limeLight.start();
+        int targetId = LimeLight.BLUE_TARGET_ID;
+        if(gamepad1.a) {
+            targetId = LimeLight.RED_TARGET_ID;
+        }
+        if(targetId == LimeLight.BLUE_TARGET_ID) {
+            telemetry.addLine("Blue Alliance selected");
+        }
+        else {
+            telemetry.addLine("Red Alliance selected");
+        }
+        telemetry.update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -27,7 +38,6 @@ public class TestOpClass extends LinearOpMode {
         int enabledSound = hardwareMap.appContext.getResources().getIdentifier("field_centric_enabled", "raw", hardwareMap.appContext.getPackageName());
         int disabledSound = hardwareMap.appContext.getResources().getIdentifier("field_centric_disabled", "raw", hardwareMap.appContext.getPackageName());
         int goteamSound = hardwareMap.appContext.getResources().getIdentifier("go_team_emerald", "raw", hardwareMap.appContext.getPackageName());
-        int opModeLoopCounter = 0;
         boolean lastLeftShooterState= false;
         boolean lastRightShooterState= false;
         boolean isShootingActive= false;
@@ -41,10 +51,11 @@ public class TestOpClass extends LinearOpMode {
         boolean isArtifactRightActive= false;
         boolean isLeftShooterActive= false;
         boolean isRightShooterActive= false;
+
         long leftArtifactStartTime = 0;  // Track when left artifact pusher was activated
         long rightArtifactStartTime = 0;  // Track when right artifact pusher was activated
         long hogWheelStartTime = 0;  // Track when hogwheels were activated
-        robot.limeLight.start();
+
         while (opModeIsActive()) {
             // Handle field centric toggle with dpad_down
             /*boolean currentDpadDownState = gamepad1.dpad_down;
@@ -81,23 +92,35 @@ public class TestOpClass extends LinearOpMode {
             // Handle drive controls using DriveSubsystem
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
             if(gamepad1.dpad_left) {
-                y = 1.0;
+                x = -1.0;
             }
             if(gamepad1.dpad_right){
-               y = -1.0;
+               x = 1.0;
             }
 
             if(gamepad1.dpad_up) {
-                y = 1.0;
+                y = -1.0;
             }
             if(gamepad1.dpad_down){
-                y = -1.0;
+                y = 1.0;
+            }
+            // When right_stick_button is pressed disable rotation from the right stick
+            // try to aim at the april tag. If the tag isn't in view just rotate.
+            if(gamepad1.right_stick_button) {
+                TargetPosition target = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), targetId);
+                if(target.isValid) {
+                    rx = robot.limeLight.limelight_aim_proportional(target.x);
+                }
+                else {
+                    rx = -0.5;
+                }
             }
             robot.driveSubsystem.handleDriveInput(
                 y,
                 x, // disable strafing for left joystick
-                gamepad1.right_stick_x,
+                rx,
                 gamepad1.left_trigger,
                 gamepad1.right_trigger);
 
@@ -117,7 +140,7 @@ public class TestOpClass extends LinearOpMode {
             if (gamepad1.a) {
                 if (!isIntakeActive) {
                     isIntakeActive = true;
-                    robot.intakeSubsystem.intakeArtifact();
+                    robot.intakeSubsystem.fullIntakeArtifact();
                 }
             }
             else {
@@ -125,6 +148,8 @@ public class TestOpClass extends LinearOpMode {
                     isIntakeActive = false;
                     robot.intakeSubsystem.stopIntake();
                 }}
+
+
             // Shooter controls - only if shooter subsystem initialized successfully
             if (robot.shooterSubsystem != null) {
 /*
@@ -237,7 +262,7 @@ public class TestOpClass extends LinearOpMode {
                         robot.shooterSubsystem.pushArtifactLeft();
                         isArtifactLeftActive = true;
                         //help with moving artifact to shooter
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                     }
                 }
                 if (gamepad1.right_bumper && !lastRightShooterState) {
@@ -251,7 +276,7 @@ public class TestOpClass extends LinearOpMode {
                         robot.shooterSubsystem.pushArtifactRight();
                         isArtifactRightActive = true;
                         //help with moving artifact to shooter
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                     }
                 }
                 if (gamepad1.x && !lastXButtonState) {
@@ -261,7 +286,7 @@ public class TestOpClass extends LinearOpMode {
                         //stop intake to prevent artifact from reloading; maybe we want to leave intake on?
                         robot.intakeSubsystem.stopIntake();
                     } else {
-                        robot.shooterSubsystem.activateHogWheel(0.75);
+                        robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_2);
                         isShootingActive = true;
                     }
                 }
@@ -270,7 +295,7 @@ public class TestOpClass extends LinearOpMode {
                         isEjectingActive = true;
                         robot.shooterSubsystem.ejectArtifactLeft();
                         robot.shooterSubsystem.ejectArtifactRight();
-                    robot.intakeSubsystem.ejectArtifact();
+                    robot.intakeSubsystem.fullEjectArtifact();
                     }
                 }
                 else {
@@ -290,7 +315,7 @@ public class TestOpClass extends LinearOpMode {
                             //stop intake to prevent artifact from reloading; maybe we want to leave intake on?
                             robot.intakeSubsystem.stopIntake();
                         } else {
-                            robot.shooterSubsystem.activateHogWheel(0.95);
+                            robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_3);
                             isShootingActive = true;
                         }
                     }
@@ -301,7 +326,7 @@ public class TestOpClass extends LinearOpMode {
                                 //stop intake to prevent artifact from reloading; maybe we want to leave intake on?
                                 robot.intakeSubsystem.stopIntake();
                             } else {
-                                robot.shooterSubsystem.activateHogWheel(0.65);
+                                robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_1);
                                 isShootingActive = true;
                             }
                     }/*
@@ -319,6 +344,8 @@ public class TestOpClass extends LinearOpMode {
             lastYButtonState = gamepad1.y;
             telemetry.addData("Version:", "2.0.1");
             telemetry.addData("Description:", "turn on intake when shooter servos turned on");
+            telemetry.addData("Left Shooter Color: ", robot.colorSubsystem.shooterLeftColor);
+            telemetry.addData("Right Shoorter Color: ", robot.colorSubsystem.shooterRightColor);
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Field Centric", robot.driveSubsystem.isFieldCentric() ? "Enabled" : "Disabled");
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());
@@ -332,29 +359,14 @@ public class TestOpClass extends LinearOpMode {
             }
 
             telemetry.update();
-
-            opModeLoopCounter ++;
+            robot.colorSubsystem.Update();
             // Handle arm controls using ArmSubsystem
             //robot.armSubsystem.handleArmMovement(
             //    gamepad2.dpad_up,
             //    gamepad2.dpad_down
             //);
 
-            // Handle servo controls using ServoSubsystem
-            //robot.servoSubsystem.handleClawControl(
-            //    gamepad2.a,
-            //    gamepad2.b
-            //);
-
-            //robot.servoSubsystem.handleWristControl(
-            //    gamepad2.x,
-            //    gamepad2.y
-            //);
-
-            //robot.servoSubsystem.handleWristSpinControl(
-            //    gamepad2.left_bumper,
-            //    gamepad2.right_bumper
-            //);
+            telemetry.update();
         }
     }
 }

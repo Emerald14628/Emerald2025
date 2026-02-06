@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 @Autonomous
 public class Blue3Point extends LinearOpMode {
@@ -25,6 +26,7 @@ public class Blue3Point extends LinearOpMode {
 
         robot.driveSubsystem.calibrateIMU();
         robot.pinpoint.resetPosAndIMU();
+        robot.colorSubsystem.Update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -45,7 +47,7 @@ public class Blue3Point extends LinearOpMode {
 
 
         if (!isShootingActive) {
-            robot.shooterSubsystem.activateHogWheel(.95);
+            robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_3);
             isShootingActive = true;
             leftArtifactStartTime = 0;  // Res
         }
@@ -154,7 +156,7 @@ public class Blue3Point extends LinearOpMode {
                 case SHOOTRIGHT2ND:
                     if (!isRightShooterActive) {
                         robot.shooterSubsystem.pushArtifactRight();
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                         isArtifactRightActive = true;
                         isRightShooterActive = true;
                         rightArtifactStartTime = System.currentTimeMillis();  // Record start time
@@ -221,7 +223,7 @@ public class Blue3Point extends LinearOpMode {
             }
 
             telemetry.update();
-
+            robot.colorSubsystem.Update();
 
         }
     }

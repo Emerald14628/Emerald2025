@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 @Autonomous
 public class BlueAuto extends LinearOpMode {
@@ -26,6 +27,7 @@ public class BlueAuto extends LinearOpMode {
 
         robot.driveSubsystem.calibrateIMU();
         robot.pinpoint.resetPosAndIMU();
+        robot.colorSubsystem.Update();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -46,7 +48,7 @@ public class BlueAuto extends LinearOpMode {
 
 
         if (!isShootingActive) {
-            robot.shooterSubsystem.activateHogWheel(.65);
+            robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_1);
             isShootingActive = true;
             leftArtifactStartTime = 0;  // Res
         }
@@ -126,7 +128,6 @@ public class BlueAuto extends LinearOpMode {
                             isArtifactLeftActive = false;
                             leftArtifactStartTime = 0;
                             currentState = States.SHOOTRIGHT;
-                            robot.shooterSubsystem.activateHogWheel(0.65);
                         }
                     }
                     break;
@@ -148,14 +149,13 @@ public class BlueAuto extends LinearOpMode {
                             isRightShooterActive  = false;
                             rightArtifactStartTime = 0;
                             currentState = States.SHOOTRIGHT2ND;
-                            robot.shooterSubsystem.activateHogWheel(0.70);
                         }
                     }
                     break;
                 case SHOOTRIGHT2ND:
                     if (!isRightShooterActive) {
                         robot.shooterSubsystem.pushArtifactRight();
-                        robot.intakeSubsystem.intakeArtifact();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                         isArtifactRightActive = true;
                         isRightShooterActive = true;
                         rightArtifactStartTime = System.currentTimeMillis();  // Record start time
@@ -222,7 +222,7 @@ public class BlueAuto extends LinearOpMode {
             }
 
             telemetry.update();
-
+            robot.colorSubsystem.Update();
 
         }
     }
