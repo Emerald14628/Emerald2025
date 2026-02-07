@@ -27,11 +27,11 @@ public class ShooterSubsystem {
     };
 
     private final double[] HogWheel1Speed = {
-            1287, 1582, 2300
+            1287, 1582, 2100
     };
 
     private final double[] HogWheel2Speed = {
-            1287, 1482, 2100
+            1287, 1482, 1900
     };
     public enum HogWheelPower {
         POWER_1,
@@ -80,7 +80,7 @@ public class ShooterSubsystem {
         LeftShooter.setPower(0);
     }
     public void activateHogWheel(double power) {
-        HogWheel1.setPower(power);
+        HogWheel1.setPower(power*1.04615);
         HogWheel2.setPower(power);
     }
 
