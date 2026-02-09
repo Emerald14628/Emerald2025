@@ -27,14 +27,12 @@ public class ColorSubsystem {
 
             // An alpha channel closer to 1 means an object is closer
             if(colors.alpha >= 0.65) {
-
                 if (hue >= 81 && hue <= 170) {
                     return org.firstinspires.ftc.teamcode.subsystems.ColorSubsystem.DetectedColor.GREEN;
                 } else if (hue >= 175 && hue <= 300) {
                     return org.firstinspires.ftc.teamcode.subsystems.ColorSubsystem.DetectedColor.PURPLE;
                 }
             }
-
             return  org.firstinspires.ftc.teamcode.subsystems.ColorSubsystem.DetectedColor.UNKNOWN;
         }
     }

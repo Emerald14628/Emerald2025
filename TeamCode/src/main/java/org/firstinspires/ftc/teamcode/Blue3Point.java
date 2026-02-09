@@ -133,7 +133,6 @@ public class Blue3Point extends LinearOpMode {
 
             telemetry.addData("Version:", "1.0.6");
             telemetry.addData("Description:", "added FCD recalibration");
-            telemetry.addData("Current Motif: ", currentMotif.toString());
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Auto Step", currentState.toString());
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());
