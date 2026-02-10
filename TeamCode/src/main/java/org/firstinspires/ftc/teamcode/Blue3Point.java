@@ -37,7 +37,7 @@ public class Blue3Point extends LinearOpMode {
         // Prepare the sound players
         boolean isShootingActive= false;
         double aimRx = 0;
-
+        TargetPosition aprilTagLocation= new TargetPosition();
         robot.pinpoint.initialize();
 
 
@@ -55,14 +55,14 @@ public class Blue3Point extends LinearOpMode {
             switch(currentState)
             {
                 case AIMATTARGET:
-                    TargetPosition aprilTagLocation = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), LimeLight.BLUE_TARGET_ID);
+                    aprilTagLocation = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), LimeLight.BLUE_TARGET_ID);
                     // If the tagLocation isn't valid then the tag isn't on the FOV
                     if(!aprilTagLocation.isValid) {
-                        aimRx = -0.5;
+                        aimRx = -0.25;
                     }
                     // x location should be negative since the cross hair will be to the right of
                     //  the target
-                    else if(aprilTagLocation.x < -0.5){
+                    else if(aprilTagLocation.x < -1.5){
                         aimRx = robot.limeLight.limelight_aim_proportional(aprilTagLocation.x);
                     }
                     // Aiming is finished now shoot.
@@ -133,6 +133,9 @@ public class Blue3Point extends LinearOpMode {
 
             telemetry.addData("Version:", "1.0.6");
             telemetry.addData("Description:", "added FCD recalibration");
+            telemetry.addData("aimrx", aimRx);
+            telemetry.addData("Tag Valid", aprilTagLocation.isValid);
+            telemetry.addData("tx", aprilTagLocation.x);
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Auto Step", currentState.toString());
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());

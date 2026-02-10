@@ -100,7 +100,7 @@ public void init (HardwareMap hardwareMap) {
         // if it is too high, the robot will oscillate around.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .25;
+        double kP = .5;
 
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. Limelight 3A hfov is 54.5
         // Normalize the txValue to [-1,0] and multiply by the kp value.

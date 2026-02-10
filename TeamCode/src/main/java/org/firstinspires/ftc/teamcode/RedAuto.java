@@ -53,7 +53,7 @@ public class RedAuto extends LinearOpMode {
             switch(currentState)
             {
                 case TURNTOLAUNCHZONE:
-                    if(robot.driveSubsystem.getHeading () > -45.0){
+                    if(robot.driveSubsystem.getHeading () > -25.0){
                     // Handle drive controls using DriveSubsystem
                     robot.driveSubsystem.handleDriveInput(
                             0.0, 0.0,

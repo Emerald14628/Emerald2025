@@ -99,7 +99,7 @@ public class RobotHardware {
         pinpoint.resetPosAndIMU();
         // Initialize subsystems
         driveSubsystem = new DriveSubsystem(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, imu);
-        intakeSubsystem = new IntakeSubsystem(intakeMotor, frontIntakeMotor);
+        intakeSubsystem = new IntakeSubsystem( frontIntakeMotor, intakeMotor);
 
         // Initialize ShooterSubsystem only if hardware is configured
         try {
