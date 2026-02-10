@@ -81,6 +81,7 @@ public void init (HardwareMap hardwareMap) {
                     if (tag == tagId) {
                         targetPosition.x = llResult.getTx();
                         targetPosition.isValid = true;
+                        break; // Exit the for loop to select this april tag.
                     }
                 }
             }
@@ -104,6 +105,17 @@ public void init (HardwareMap hardwareMap) {
 
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. Limelight 3A hfov is 54.5
         // Normalize the txValue to [-1,0] and multiply by the kp value.
-        return (txValue/27.25) * kP;
+        double rx = (txValue/27.25) * kP;
+
+        // If the rx too close to 0 then the robot won't turn so force a default slow rate
+        if(rx < 0 && rx > -0.15)
+        {
+            rx = -0.15;
+        }
+        else if(rx > 0 && rx < 0.15)
+        {
+            rx = 0.15;
+        }
+        return rx;
     }
 }

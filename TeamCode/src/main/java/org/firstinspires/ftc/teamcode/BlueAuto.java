@@ -96,11 +96,11 @@ public class BlueAuto extends LinearOpMode {
                     aprilTagLocation = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), LimeLight.BLUE_TARGET_ID);
                     // If the tagLocation isn't valid then the tag isn't on the FOV
                     if(!aprilTagLocation.isValid) {
-                        aimRx = -0.25;
+                        aimRx = -0.3;
                     }
                     // x location should be negative since the cross hair will be to the right of
                     //  the target
-                    else if(aprilTagLocation.x < -1.0){
+                    else if(aprilTagLocation.x < -0.5){
                         aimRx = robot.limeLight.limelight_aim_proportional(aprilTagLocation.x);
                     }
                     // Aiming is finished now shoot.

@@ -91,7 +91,7 @@ public class RedAuto extends LinearOpMode {
                     TargetPosition aprilTagLocation = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), LimeLight.RED_TARGET_ID);
                     // If the tagLocation isn't valid then the tag isn't on the FOV
                     if(!aprilTagLocation.isValid) {
-                        aimRx = 0.5;
+                        aimRx = 0.3;
                     }
                     // x location should be positive since the cross hair will be to the left of
                     //  the target
