@@ -100,7 +100,7 @@ public class BlueAuto extends LinearOpMode {
                     }
                     // x location should be negative since the cross hair will be to the right of
                     //  the target
-                    else if(aprilTagLocation.x < -0.5){
+                    else if(aprilTagLocation.x < -0.5 || aprilTagLocation.x > 0.5){
                         aimRx = robot.limeLight.limelight_aim_proportional(aprilTagLocation.x);
                     }
                     // Aiming is finished now shoot.
