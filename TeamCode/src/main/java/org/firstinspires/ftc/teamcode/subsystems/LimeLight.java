@@ -79,7 +79,7 @@ public void init (HardwareMap hardwareMap) {
 
                     // Check AprilTag ID for the goal tag and get the tx value
                     if (tag == tagId) {
-                        targetPosition.x = llResult.getTx();
+                        targetPosition.x = fr.getTargetXDegrees();
                         targetPosition.isValid = true;
                         break; // Exit the for loop to select this april tag.
                     }
