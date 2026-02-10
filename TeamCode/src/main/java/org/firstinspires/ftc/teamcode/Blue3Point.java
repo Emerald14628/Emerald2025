@@ -41,6 +41,7 @@ public class Blue3Point extends LinearOpMode {
         boolean isRightShooterActive= false;
         long leftArtifactStartTime = 0;  // Track when left artifact pusher was activated
         long rightArtifactStartTime = 0;  // Track when right artifact pusher was activated
+        long activateHogwheelStartTime = 0;        ;  // Track when right artifact pusher was activated
        // robot.limeLight.start();
 
         robot.pinpoint.initialize();
@@ -57,7 +58,7 @@ public class Blue3Point extends LinearOpMode {
             switch(currentState)
             {
                 case TURNLEFTFORTYFIVE:
-                    if(robot.driveSubsystem.getHeading() < 15.0){
+                    if(robot.driveSubsystem.getHeading() < 6.5){
                     // Handle drive controls using DriveSubsystem
                     robot.driveSubsystem.handleDriveInput(
                             0.0, 0.0,
@@ -70,27 +71,16 @@ public class Blue3Point extends LinearOpMode {
                                 0.0, 0.0,
                                 0.0,
                                 0.0,0.0);
-                        currentState = States.SHOOTLEFT;
+                        currentState = States.MOVEFORWARD;
+                        activateHogwheelStartTime = System.currentTimeMillis();
                     }
                     break;
                 case MOVEFORWARD:
-                    Pose2D pos = robot.pinpoint.getPosition();
-                    // Position is returned in Meters
-                    if(Math.sqrt(pos.getX(DistanceUnit.METER)*pos.getX(DistanceUnit.METER)+
-                                       pos.getY(DistanceUnit.METER)*pos.getY(DistanceUnit.METER))< 0.3)
-                    {
-                        robot.driveSubsystem.handleDriveInput(
-                                -1.0, 0.0,
-                                0.0,
-                                0.0,0.0);
+                    long diffrence = System.currentTimeMillis() - activateHogwheelStartTime;
+                    if (diffrence > 3000) {
+                        currentState = States.SHOOTLEFT;
                     }
-                    else {
-                        robot.driveSubsystem.handleDriveInput(
-                                0.0, 0.0,
-                                0.0,
-                                0.0,0.0);
-                        currentState = States.TURNAROUND;
-                    }
+
                     break;
                 case TURNAROUND:
                     if(robot.driveSubsystem.getHeading() > -100.0){

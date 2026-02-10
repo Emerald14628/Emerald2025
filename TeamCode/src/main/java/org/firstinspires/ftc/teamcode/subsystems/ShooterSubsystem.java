@@ -27,11 +27,11 @@ public class ShooterSubsystem {
     };
 
     private final double[] HogWheel1Speed = {
-            1287, 1582, 2300
+            1187, 1582, 2350
     };
 
     private final double[] HogWheel2Speed = {
-            1287, 1482, 2100
+            1187, 1482, 2100
     };
     public enum HogWheelPower {
         POWER_1,

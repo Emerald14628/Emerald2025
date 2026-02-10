@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 public class Red3Point extends LinearOpMode {
 
     enum States{
-        TURNRIGHTFORTYFIVE, MOVEFORWARD, TURNAROUND, SHOOTLEFT, SHOOTRIGHT,SHOOTRIGHT2ND,TURNLEFTTFORTYFIVE, FINALPOSITION, END
+        TURNRIGHTFORTYFIVE, MOVEFORWARD, TURNAROUND, SHOOTLEFT, SHOOTRIGHT,SHOOTRIGHT2ND,TURNLEFTTFORTYFIVE, FINALPOSITION, END, WAIT
     }
     private RobotHardware robot;
     private States currentState = States.TURNRIGHTFORTYFIVE;
@@ -53,7 +53,7 @@ public class Red3Point extends LinearOpMode {
                 robot.pinpoint.update();
                 switch (currentState) {
                     case TURNRIGHTFORTYFIVE:
-                        if (robot.driveSubsystem.getHeading() > -8.0) {
+                        if (robot.driveSubsystem.getHeading() > -6.5) {
                             // Handle drive controls using DriveSubsystem
                             robot.driveSubsystem.handleDriveInput(
                                     0.0, 0.0,
@@ -70,7 +70,7 @@ public class Red3Point extends LinearOpMode {
                         break;
                     case MOVEFORWARD:
                         long diffrence = System.currentTimeMillis() - activateHogwheelStartTime;
-                        if (diffrence > 2500) {
+                        if (diffrence > 3000) {
                             currentState = States.SHOOTLEFT;
                 }
 
