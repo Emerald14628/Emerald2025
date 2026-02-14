@@ -112,9 +112,12 @@ public class TestOpClass extends LinearOpMode {
                 TargetPosition target = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), targetId);
                 if(target.isValid) {
                     rx = robot.limeLight.limelight_aim_proportional(target.x);
+                    if(target.x < -.25 || target.x > .25) {
+                        rx = 0.0;
+                    }
                 }
                 else {
-                    rx = -0.5;
+                    rx = -0.25;
                 }
             }
             robot.driveSubsystem.handleDriveInput(
