@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 public class Red3Point extends LinearOpMode {
 
     enum States{
-        AIMATTARGET, SHOOTGPP, SHOOTPGP, SHOOTPPG, FINALPOSITION, END
+        AIMATTARGET, HOGWHEELSPINUP, SHOOTGPP, SHOOTPGP, SHOOTPPG, FINALPOSITION, END
     }
     private RobotHardware robot;
     private States currentState = States.AIMATTARGET;
@@ -34,7 +34,7 @@ public class Red3Point extends LinearOpMode {
         // Prepare the sound players
         boolean isShootingActive= false;
 
-        long activateHogwheelStartTime = 0;          // Track when right artifact pusher was activated
+        long hogwheelStartTime = 0;
         double aimRx = 0;
 
         robot.driveSubsystem.calibrateIMU();
@@ -43,6 +43,7 @@ public class Red3Point extends LinearOpMode {
         if (!isShootingActive) {
             robot.shooterSubsystem.activateHogWheel(ShooterSubsystem.HogWheelPower.POWER_3);
             isShootingActive = true;
+            hogwheelStartTime = System.currentTimeMillis();
         }
             while (opModeIsActive()) {
 
@@ -66,16 +67,7 @@ public class Red3Point extends LinearOpMode {
                     // Aiming is finished now shoot.
                     else {
                         aimRx = 0.0;
-                        if(currentMotif == LimeLight.Motif.PPG ) {
-                            currentState = States.SHOOTPPG;
-                        }
-                        else if(currentMotif == LimeLight.Motif.PGP){
-                            currentState = States.SHOOTPGP;
-                        }
-                        // Catch if GPP or UNKNOWN
-                        else {
-                            currentState = States.SHOOTGPP;
-                        }
+                        currentState = States.HOGWHEELSPINUP;
                     }
                     // Handle drive controls using DriveSubsystem
                     robot.driveSubsystem.handleDriveInput(
@@ -83,7 +75,23 @@ public class Red3Point extends LinearOpMode {
                             aimRx,
                             0.0,0.0);
                     break;
-
+                    case HOGWHEELSPINUP:
+                        if(hogwheelStartTime > 0){
+                            long elapsedTime = System.currentTimeMillis() - hogwheelStartTime;
+                            if (elapsedTime >= 3000) {
+                                if(currentMotif == LimeLight.Motif.PPG ) {
+                                    currentState = States.SHOOTPPG;
+                                }
+                                else if(currentMotif == LimeLight.Motif.PGP){
+                                    currentState = States.SHOOTPGP;
+                                }
+                                // Catch if GPP or UNKNOWN
+                                else {
+                                    currentState = States.SHOOTGPP;
+                                }
+                            }
+                        }
+                        break;
                     case SHOOTGPP:
                         // Wait for shooting to finish
                         if (robot.autonomousSubsystem.shootGPPMotif(robot)) {

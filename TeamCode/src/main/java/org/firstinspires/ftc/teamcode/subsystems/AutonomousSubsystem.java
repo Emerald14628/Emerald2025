@@ -30,11 +30,8 @@ public class AutonomousSubsystem {
                     leftArtifactStartTime = System.currentTimeMillis();  // Record start time
                 } else if (isArtifactLeftActive && leftArtifactStartTime > 0) {
                     long elapsedTime = System.currentTimeMillis() - leftArtifactStartTime;
-                    if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                        robot.shooterSubsystem.stopArtifactLeft();
-                        isArtifactLeftActive = false;
-                        isLeftShooterActive = false;
-                        leftArtifactStartTime = 0;
+                    if (elapsedTime >= 500) { // Only wait half a second before shooting the right
+
                         currentState = States.SHOOTRIGHT;
                     }
                 }
@@ -52,6 +49,10 @@ public class AutonomousSubsystem {
                         isArtifactRightActive = false;
                         isRightShooterActive = false;
                         rightArtifactStartTime = 0;
+                        robot.shooterSubsystem.stopArtifactLeft();
+                        isArtifactLeftActive = false;
+                        isLeftShooterActive = false;
+                        leftArtifactStartTime = 0;
                         currentState = States.SHOOTRIGHT2ND;
                     }
                 }
@@ -97,11 +98,14 @@ public class AutonomousSubsystem {
                 } else if (isArtifactLeftActive && leftArtifactStartTime > 0) {
                     long elapsedTime = System.currentTimeMillis() - leftArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                        robot.shooterSubsystem.stopArtifactLeft();
                         isArtifactLeftActive = false;
                         isLeftShooterActive = false;
                         leftArtifactStartTime = 0;
                         robot.shooterSubsystem.stopShooting();
+                        isArtifactRightActive = false;
+                        isRightShooterActive = false;
+                        rightArtifactStartTime = 0;
+                        robot.intakeSubsystem.stopIntake();
                         currentState = States.NOTSTARTED;
                         shootingFinished = true;
                     }
@@ -133,12 +137,8 @@ public class AutonomousSubsystem {
                     rightArtifactStartTime = System.currentTimeMillis();  // Record start time
                 } else if (isArtifactRightActive && rightArtifactStartTime > 0) {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
-                    if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                        isArtifactRightActive = false;
-                        isRightShooterActive = false;
-                        rightArtifactStartTime = 0;
+                    if (elapsedTime >= 500) {  // Wait half a second before shooting left.
                         currentState = States.SHOOTLEFT;
-                        robot.intakeSubsystem.stopIntake();
                     }
                 }
                 break;
@@ -164,9 +164,11 @@ public class AutonomousSubsystem {
                     long elapsedTime = System.currentTimeMillis() - leftArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         robot.shooterSubsystem.stopArtifactLeft();
+                        robot.intakeSubsystem.intakeArtifactStage2();
                         isArtifactLeftActive = false;
                         isLeftShooterActive = false;
                         leftArtifactStartTime = 0;
+                        rightArtifactStartTime = System.currentTimeMillis();
                         currentState = States.SHOOTRIGHT2ND;
                     }
                 }
@@ -180,23 +182,13 @@ public class AutonomousSubsystem {
                     rightArtifactStartTime = System.currentTimeMillis();  // Record start time
                 } else if (isArtifactRightActive && rightArtifactStartTime > 0) {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
-                    if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
-                        robot.shooterSubsystem.stopArtifactRight();
-                        isArtifactRightActive = false;
-                        isRightShooterActive = false;
-                        rightArtifactStartTime = 0;
+                    if (elapsedTime >= 500) {  // Wait half a second to shoot the left
                         currentState = States.SHOOTLEFT;
                     }
                 }
                 break;
             case SHOOTRIGHT2ND:
-                if (!isRightShooterActive) {
-                    robot.shooterSubsystem.pushArtifactRight();
-                    robot.intakeSubsystem.intakeArtifactStage2();
-                    isArtifactRightActive = true;
-                    isRightShooterActive = true;
-                    rightArtifactStartTime = System.currentTimeMillis();  // Record start time
-                } else if (isArtifactRightActive && rightArtifactStartTime > 0) {
+                if (isArtifactRightActive && rightArtifactStartTime > 0) {
                     long elapsedTime = System.currentTimeMillis() - rightArtifactStartTime;
                     if (elapsedTime >= 3000) {  // 3000 milliseconds = 3 seconds
                         isArtifactRightActive = false;
