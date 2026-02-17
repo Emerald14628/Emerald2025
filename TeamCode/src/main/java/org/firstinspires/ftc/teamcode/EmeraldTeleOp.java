@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 
 @TeleOp
-public class TestOpClass extends LinearOpMode {
+public class EmeraldTeleOp extends LinearOpMode {
     private RobotHardware robot;
 
     @Override

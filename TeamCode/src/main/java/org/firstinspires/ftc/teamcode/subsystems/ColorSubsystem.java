@@ -26,7 +26,7 @@ public class ColorSubsystem {
             float  hue = JavaUtil.colorToHue(colors.toColor());
 
             // An alpha channel closer to 1 means an object is closer
-            if(colors.alpha >= 0.65) {
+            if(colors.alpha >= 0.5) {
                 if (hue >= 81 && hue <= 170) {
                     return org.firstinspires.ftc.teamcode.subsystems.ColorSubsystem.DetectedColor.GREEN;
                 } else if (hue >= 175 && hue <= 300) {
