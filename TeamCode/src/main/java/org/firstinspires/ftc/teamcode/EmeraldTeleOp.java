@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TargetPosition;
 
 @TeleOp
-public class TestOpClass extends LinearOpMode {
+public class EmeraldTeleOp extends LinearOpMode {
     private RobotHardware robot;
 
     @Override
@@ -112,9 +112,12 @@ public class TestOpClass extends LinearOpMode {
                 TargetPosition target = robot.limeLight.getTargetPosition(robot.imu.getRobotYawPitchRollAngles().getYaw(), targetId);
                 if(target.isValid) {
                     rx = robot.limeLight.limelight_aim_proportional(target.x);
+                    if(target.x < -.25 || target.x > .25) {
+                        rx = 0.0;
+                    }
                 }
                 else {
-                    rx = -0.5;
+                    rx = -0.25;
                 }
             }
             robot.driveSubsystem.handleDriveInput(
@@ -344,8 +347,8 @@ public class TestOpClass extends LinearOpMode {
             lastYButtonState = gamepad1.y;
             telemetry.addData("Version:", "2.0.1");
             telemetry.addData("Description:", "turn on intake when shooter servos turned on");
-            telemetry.addData("Left Shooter Color: ", robot.colorSubsystem.shooterLeftColor);
-            telemetry.addData("Right Shoorter Color: ", robot.colorSubsystem.shooterRightColor);
+            telemetry.addData("Left Shooter Color: ", robot.colorSubsystem.shooterLeftColor.toString());
+            telemetry.addData("Right Shoorter Color: ", robot.colorSubsystem.shooterRightColor.toString());
             robot.driveSubsystem.addMotorPowersToTelemetry(telemetry);
             telemetry.addData("Field Centric", robot.driveSubsystem.isFieldCentric() ? "Enabled" : "Disabled");
             telemetry.addData("Robot Heading", "%.1f°", robot.driveSubsystem.getHeading());

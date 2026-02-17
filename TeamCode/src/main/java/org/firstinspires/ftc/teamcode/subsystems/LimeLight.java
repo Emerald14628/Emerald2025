@@ -79,8 +79,9 @@ public void init (HardwareMap hardwareMap) {
 
                     // Check AprilTag ID for the goal tag and get the tx value
                     if (tag == tagId) {
-                        targetPosition.x = llResult.getTx();
+                        targetPosition.x = fr.getTargetXDegrees();
                         targetPosition.isValid = true;
+                        break; // Exit the for loop to select this april tag.
                     }
                 }
             }
@@ -100,10 +101,21 @@ public void init (HardwareMap hardwareMap) {
         // if it is too high, the robot will oscillate around.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .25;
+        double kP = .5;
 
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. Limelight 3A hfov is 54.5
         // Normalize the txValue to [-1,0] and multiply by the kp value.
-        return (txValue/27.25) * kP;
+        double rx = (txValue/27.25) * kP;
+
+        // If the rx too close to 0 then the robot won't turn so force a default slow rate
+        if(rx < 0 && rx > -0.15)
+        {
+            rx = -0.15;
+        }
+        else if(rx > 0 && rx < 0.15)
+        {
+            rx = 0.15;
+        }
+        return rx;
     }
 }
